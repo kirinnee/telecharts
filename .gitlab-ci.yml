@@ -1,5 +1,3 @@
-image: kirinnee/frontend-gitlab-runner:latest
-
 stages:
   - build
   - deploy
@@ -10,6 +8,8 @@ cache:
 
 Build:
   stage: build
+  tags:
+    - frontend
   script:
     - yarn install --prefer-offline
     - yarn build
@@ -19,6 +19,8 @@ Build:
 
 Deploy:
   stage: deploy
+  tags:
+    - frontend
   script:
     - cd config
     - deployimage deploy var~rimage.arguments~
