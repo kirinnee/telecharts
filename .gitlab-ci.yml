@@ -22,9 +22,6 @@ Deploy:
   tags:
     - frontend
   script:
-    - cd config
-    - deployimage deploy var~rimage.arguments~
-    - cd ../dist
     - netdeploy -I $SITE_ID -T $NETLIFY_TOKEN
   only:
     - prod
