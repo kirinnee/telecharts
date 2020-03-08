@@ -1,0 +1,27 @@
+[
+  {
+    "key": "def",
+    "width": 2000,
+    "sizes": {
+      "def": 80,
+      "med": 50,
+      "small": 30
+    },
+    "target": "./public",
+    "input": "../dist/pages/",
+    "compressions": {
+      "pngQuant": {
+        "speed": 11,
+        "bit": 256,
+        "min-quality": 65,
+        "max-quality": 80
+      },
+      "jpegOptim": {
+        "quality": 75,
+        "strip": true,
+        "progressive": true
+      },
+      "useless-field": true
+    }
+  }
+]

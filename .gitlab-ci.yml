@@ -1,0 +1,30 @@
+image: kirinnee/frontend-gitlab-runner:latest
+
+stages:
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+Build:
+  stage: build
+  script:
+    - yarn install --prefer-offline
+    - yarn build
+  artifacts:
+    paths:
+      - dist/
+
+Deploy:
+  stage: deploy
+  script:
+    - cd config
+    - deployimage deploy var~rimage.arguments~
+    - cd ../dist
+    - netdeploy -I $SITE_ID -T $NETLIFY_TOKEN
+  only:
+    - prod
+    - stage
+    - master
