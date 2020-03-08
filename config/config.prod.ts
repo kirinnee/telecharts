@@ -2,7 +2,7 @@ import {RuleSetQuery} from "webpack";
 
 let prodFileOpts: RuleSetQuery = {
 	name: '[path][name].[ext]',
-	publicPath: './public',
+	publicPath: '',
 	context: './src'
 };
 
