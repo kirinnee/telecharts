@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router, {Route, RouteConfig} from 'vue-router'
-import HelloWorld from "./components/HelloWorld.vue";
+import HelloWorld from "./views/Home.vue";
 import About from "./views/About.vue";
 import NotFound from "./views/NotFound.vue";
 
