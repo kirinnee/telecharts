@@ -7,7 +7,7 @@
       "med": 50,
       "small": 30
     },
-    "target": "./public",
+    "target": "../dist/pages/",
     "input": "../dist/pages/",
     "compressions": {
       "pngQuant": {
