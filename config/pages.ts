@@ -9,7 +9,7 @@ let pages: IPage = {
             template: "index.html",
             output: "index.html",
             chunks: ['index'],
-            title: 'Index'
+            title: 'TeleCharts'
         }
     ],
 };

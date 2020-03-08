@@ -1,4 +1,4 @@
-import logo from "./assets/logo.png"
+import logo from "./assets/logo.jpg"
 import {Rimage, Rimager} from "@kirinnee/rimage";
 import {SortType} from "@kirinnee/core";
 import {core} from "./init";
