@@ -34,6 +34,7 @@
     "gsap": "^3.2.4",
     "vue": "^2.6.5",
     "vue-class-component": "^6.3.2",
+    "vue-histogram-slider": "^0.3.4",
     "vue-property-decorator": "^7.3.0",
     "vue-router": "^3.0.2"
   },

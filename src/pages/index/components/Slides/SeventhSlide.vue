@@ -1,10 +1,9 @@
 <template>
     <div class="holder">
         <h1>Save Telegram Chat History</h1>
-        <div>Add it to Chrome and wait for the installation</div>
-        <img :src="two" alt="second step"/>
-        <div>Ensure you have the extension on your Chrome's navigation bar</div>
-        <img :src="three" alt="third step"/>
+        <div> Download the chat as text file.
+        </div>
+        <img :src="image" alt="eighth step"/>
         <div class="b-holder">
             <Button class="b" text="Back" @click.native="Back"/>
             <Button class="b" text="Next" @click.native="Next"/>
@@ -47,23 +46,24 @@
 
 <script lang='ts'>
     import {Component} from 'vue-property-decorator';
-    import {images} from "../index";
-    import Base from "./Base.vue";
-    import Button from "./Button.vue";
+    import {images} from "../../index";
+    import Base from "../Base.vue";
+    import Button from "../Button.vue";
 
     @Component({
         components: {Button}
     })
-    export default class ThirdSlide extends Base {
-        two: string = images.install.two;
-        three: string = images.install.three;
+    export default class SeventhSlide extends Base {
+        Main: any;
+        image: string = images.install.eight;
+
 
         Next() {
-            this.Main.GoToSlide(3);
+            this.Main.GoToSlide(7);
         }
 
         Back() {
-            this.Main.BackToSlide(1);
+            this.Main.BackToSlide(5);
         }
     }
 </script>

@@ -3,13 +3,13 @@ import {EaseStrength} from "@kirinnee/kease";
     <div class="main" ref="color">
         <div class="app">
             <UploadLogs ref="upload" class="upload"/>
-            <SeventhSlide ref="seventh" class="seventh"/>
-            <SixthSlide ref="sixth" class="sixth"/>
-            <FifthSlide ref="fifth" class="fifth"/>
-            <FourthSlide ref="fourth" class="fourth"/>
-            <ThirdSlide ref="third" class="third"/>
-            <SecondSlide ref="second" class="second"/>
-            <FirstSlide ref="first" class="first"/>
+            <!--            <SeventhSlide ref="seventh" class="seventh"/>-->
+            <!--            <SixthSlide ref="sixth" class="sixth"/>-->
+            <!--            <FifthSlide ref="fifth" class="fifth"/>-->
+            <!--            <FourthSlide ref="fourth" class="fourth"/>-->
+            <!--            <ThirdSlide ref="third" class="third"/>-->
+            <!--            <SecondSlide ref="second" class="second"/>-->
+            <!--            <FirstSlide ref="first" class="first"/>-->
         </div>
     </div>
 </template>
@@ -22,11 +22,10 @@ import {EaseStrength} from "@kirinnee/kease";
 
     .app {
 
-
         width: 100%;
         height: 100vh;
 
-        .second, .third, .fourth, .fifth, .sixth, .seventh, .upload {
+        .second, .third, .fourth, .fifth, .sixth, .seventh {
             left: 100%;
             opacity: 0;
         }
@@ -36,15 +35,15 @@ import {EaseStrength} from "@kirinnee/kease";
 
 <script lang="ts">
     import {Component, Vue} from 'vue-property-decorator';
-    import FirstSlide from "../components/FirstSlide.vue";
-    import SecondSlide from "../components/SecondSlide.vue";
-    import ThirdSlide from "../components/ThirdSlide.vue";
+    import FirstSlide from "../components/Slides/FirstSlide.vue";
+    import SecondSlide from "../components/Slides/SecondSlide.vue";
+    import ThirdSlide from "../components/Slides/ThirdSlide.vue";
     import {eases} from "../init";
     import {EaseStrength, kEasing} from "@kirinnee/kease";
-    import FourthSlide from "../components/FourthSlide.vue";
-    import SixthSlide from "../components/SixthSlide.vue";
-    import FifthSlide from "../components/FifthSlide.vue";
-    import SeventhSlide from "../components/SeventhSlide.vue";
+    import FourthSlide from "../components/Slides/FourthSlide.vue";
+    import SixthSlide from "../components/Slides/SixthSlide.vue";
+    import FifthSlide from "../components/Slides/FifthSlide.vue";
+    import SeventhSlide from "../components/Slides/SeventhSlide.vue";
     import UploadLogs from "../components/UploadLogs.vue";
 
     @Component({
@@ -96,7 +95,15 @@ import {EaseStrength} from "@kirinnee/kease";
 
         GoToSlide(x: number) {
             const swing = eases.Swing(EaseStrength.Linear);
-            this.ChangeColor(swing);
+            if (x == 7) {
+                const main: Element = (this.$refs["color"] as Element);
+
+                main.BackgroundColor(this.currentColor, "#c6c6c6", {duration: 500, ease: swing})
+                    .Promise.then(() => this.currentColor = "#c6c6c6");
+            } else {
+                this.ChangeColor(swing);
+
+            }
             this.Slides[this.current].$el
                 .X(0, "-100%", {duration: 500, ease: swing})
                 .Opacity(1, 0, {duration: 0});

@@ -41,6 +41,9 @@ function responsiveAdapter() {
 	}
 }
 
+function Commarize(x: number): string {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 responsiveAdapter();
 
@@ -55,5 +58,6 @@ export {
 	eases,
 	eleFact,
 	isMobile,
-	TweenLite
+	TweenLite,
+	Commarize,
 }

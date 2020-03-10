@@ -1,15 +1,10 @@
 <template>
     <div class="holder">
         <h1>Save Telegram Chat History</h1>
-        <div> Click the "All" button
-        </div>
-        <img :src="six" alt="sixth step"/>
-        <div> You should immediately see a stopwatch running. Wait for up to 20 minutes for the
-            extension to load your Telegram history. If the timer does not come up or nothing is happening,
-            refresh the page and try again.
-        </div>
-        <img :src="seven" alt="seventh step"/>
-
+        <div>Add it to Chrome and wait for the installation</div>
+        <img :src="two" alt="second step"/>
+        <div>Ensure you have the extension on your Chrome's navigation bar</div>
+        <img :src="three" alt="third step"/>
         <div class="b-holder">
             <Button class="b" text="Back" @click.native="Back"/>
             <Button class="b" text="Next" @click.native="Next"/>
@@ -52,23 +47,23 @@
 
 <script lang='ts'>
     import {Component} from 'vue-property-decorator';
-    import {images} from "../index";
-    import Base from "./Base.vue";
-    import Button from "./Button.vue";
+    import {images} from "../../index";
+    import Base from "../Base.vue";
+    import Button from "../Button.vue";
 
     @Component({
         components: {Button}
     })
-    export default class SixthSlide extends Base {
-        six: string = images.install.six;
-        seven: string = images.install.seven;
+    export default class ThirdSlide extends Base {
+        two: string = images.install.two;
+        three: string = images.install.three;
 
         Next() {
-            this.Main.GoToSlide(6);
+            this.Main.GoToSlide(3);
         }
 
         Back() {
-            this.Main.BackToSlide(4);
+            this.Main.BackToSlide(1);
         }
     }
 </script>

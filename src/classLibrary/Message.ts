@@ -1,5 +1,6 @@
 const em = require("extract-emoji");
 
+
 interface Message {
     type: "text" | "audio" | "photo" | "sticker" | "video" | "document"
     time: Date
@@ -10,6 +11,8 @@ interface Message {
     characters: number
     words: number
     emoji: { [k: string]: number }
+    emojiCount: number;
+    heartCount: number;
 
     audioLength: number;
 
@@ -17,11 +20,15 @@ interface Message {
 }
 
 
-function MessageParser(input: string): [Message[], string, string] {
+function MessageParser(input: string): [Message[], string, string, string, string, Date, Date] {
 
     const messages: Message[] = [];
     let user1 = "";
     let user2 = "";
+    let handle1 = "";
+    let handle2 = "";
+    let start = new Date();
+    let end = new Date(1970, 1, 1);
 
     input.LineBreak()
         .Where(e => !e.IsEmpty())
@@ -38,13 +45,21 @@ function MessageParser(input: string): [Message[], string, string] {
                     characters: -1,
                     words: -1,
                     emoji: {},
-                    audioLength: 1,
+                    emojiCount: 0,
+                    heartCount: 0,
+                    audioLength: -1,
                     animated: false,
                 };
                 if (user1 == "") {
                     user1 = raw.sender;
                 } else if (user1 != raw.sender) {
                     user2 = raw.sender;
+                }
+
+                if (handle1 == "") {
+                    handle1 = raw.handle;
+                } else if (handle1 != raw.handle) {
+                    handle2 = raw.handle;
                 }
                 if (CheckPhoto(raw.text)) {
                     message.type = "photo"
@@ -63,15 +78,19 @@ function MessageParser(input: string): [Message[], string, string] {
                             message.type = "audio";
                             message.audioLength = length;
                         } else {
-                            const [char, word, emoji] = ParseText(raw.text);
+                            const [char, word, emoji, count, heartCount] = ParseText(raw.text);
                             message.type = "text";
                             message.characters = char;
                             message.words = word;
                             message.emoji = emoji;
+                            message.emojiCount = count;
+                            message.heartCount = heartCount;
                         }
                     }
                 }
                 messages.push(message);
+                if (message.time < start) start = message.time;
+                if (message.time > end) end = message.time;
             } else {
                 const [char, word, emoji] = ParseText(e);
                 const last = messages.Last()!;
@@ -87,8 +106,9 @@ function MessageParser(input: string): [Message[], string, string] {
                     }
                 }
             }
+
         });
-    return [messages, user1, user2];
+    return [messages, user1, user2, handle1, handle2, start, end];
 }
 
 
@@ -105,22 +125,24 @@ function CheckDocument(text: string): boolean {
     return text.Starts("[[Document, size ") && text.endsWith("bytes]]");
 }
 
-function ParseText(text: string): [number, number, { [k: string]: number }] {
+function ParseText(text: string): [number, number, { [k: string]: number }, number, number] {
     const count = text.split(" ").length;
     const char = text.Remove(" ").length;
     const emojis: { [k: string]: number } = {};
-    (em.extractEmoji(text) as string[]).Each(e => {
+    const eCount = (em.extractEmoji(text) as string[]);
+    eCount.Each(e => {
         if (emojis[e] == null) {
             emojis[e] = 1;
         } else {
             emojis[e]++;
         }
     });
-    return [char, count, emojis];
+    const heart = emojis["❤"] || 0;
+    return [char, count, emojis, eCount.length, heart];
 }
 
 function CheckSticker(text: string): [boolean, boolean] {
-    if (text.Starts("[[") && text.split(" ")[1] == "Sticker" && text.Ends("bytes]]")) {
+    if (text.Starts("[[") && text.split(" ")[1] == "Sticker," && text.Ends("bytes]]")) {
         return [true, false]
     } else if (text == "[[?messageMediaUnsupported]]") {
         return [true, true]

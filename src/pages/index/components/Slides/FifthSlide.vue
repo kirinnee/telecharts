@@ -1,10 +1,9 @@
 <template>
     <div class="holder">
         <h1>Save Telegram Chat History</h1>
-        <div>Navigate to <a href="https://web.telegram.org/" target="_blank"> Telegram Web </a>
-            and choose a conversation.
+        <div> Click the extension icon at the top right corner
         </div>
-        <img :src="image" alt="fourth step"/>
+        <img :src="image" alt="fifth step"/>
         <div class="b-holder">
             <Button class="b" text="Back" @click.native="Back"/>
             <Button class="b" text="Next" @click.native="Next"/>
@@ -47,22 +46,22 @@
 
 <script lang='ts'>
     import {Component} from 'vue-property-decorator';
-    import {images} from "../index";
-    import Base from "./Base.vue";
-    import Button from "./Button.vue";
+    import {images} from "../../index";
+    import Base from "../Base.vue";
+    import Button from "../Button.vue";
 
     @Component({
         components: {Button}
     })
-    export default class FourthSlide extends Base {
-        image: string = images.install.four;
+    export default class FifthSlide extends Base {
+        image: string = images.install.five;
 
         Next() {
-            this.Main.GoToSlide(4);
+            this.Main.GoToSlide(5);
         }
 
         Back() {
-            this.Main.BackToSlide(2);
+            this.Main.BackToSlide(3);
         }
     }
 </script>

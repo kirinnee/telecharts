@@ -27,8 +27,8 @@
 
 <script lang='ts'>
     import {Component} from 'vue-property-decorator';
-    import Base from "./Base.vue";
-    import Button from "./Button.vue";
+    import Base from "../Base.vue";
+    import Button from "../Button.vue";
 
     @Component({
         components: {Button}

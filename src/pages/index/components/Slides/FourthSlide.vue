@@ -1,14 +1,13 @@
 <template>
     <div class="holder">
         <h1>Save Telegram Chat History</h1>
-        <div>Install "Save Telegram Chat History" chrome extension on Chrome <a
-                href="https://chrome.google.com/webstore/detail/save-telegram-chat-histor/kgldnbjoeinkkgpphaaljlfhfdbndfjc"
-                target="_blank">here</a>. This is only available on Chrome.
+        <div>Navigate to <a href="https://web.telegram.org/" target="_blank"> Telegram Web </a>
+            and choose a conversation.
         </div>
-        <img :src="one" alt="first step"/>
+        <img :src="image" alt="fourth step"/>
         <div class="b-holder">
-            <Button class="button" @click.native="Back" text="Back"/>
-            <Button class="button" @click.native="Next" text="Next"/>
+            <Button class="b" text="Back" @click.native="Back"/>
+            <Button class="b" text="Next" @click.native="Next"/>
         </div>
     </div>
 </template>
@@ -37,7 +36,7 @@
 
         img {
             margin: 30px;
-            height: 30%;
+            max-height: 30%;
         }
     }
 
@@ -48,24 +47,22 @@
 
 <script lang='ts'>
     import {Component} from 'vue-property-decorator';
-    import {images} from "../index";
-    import Base from "./Base.vue";
-    import Button from "./Button.vue";
+    import {images} from "../../index";
+    import Base from "../Base.vue";
+    import Button from "../Button.vue";
 
     @Component({
         components: {Button}
     })
-    export default class SecondSlide extends Base {
-        one: string = images.install.one;
+    export default class FourthSlide extends Base {
+        image: string = images.install.four;
 
         Next() {
-            this.Main.GoToSlide(2);
+            this.Main.GoToSlide(4);
         }
 
         Back() {
-            this.Main.BackToSlide(0);
+            this.Main.BackToSlide(2);
         }
-
-
     }
 </script>

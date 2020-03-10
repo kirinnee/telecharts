@@ -1,9 +1,15 @@
 <template>
     <div class="holder">
         <h1>Save Telegram Chat History</h1>
-        <div> Click the extension icon at the top right corner
+        <div> Click the "All" button
         </div>
-        <img :src="image" alt="fifth step"/>
+        <img :src="six" alt="sixth step"/>
+        <div> You should immediately see a stopwatch running. Wait for up to 20 minutes for the
+            extension to load your Telegram history. If the timer does not come up or nothing is happening,
+            refresh the page and try again.
+        </div>
+        <img :src="seven" alt="seventh step"/>
+
         <div class="b-holder">
             <Button class="b" text="Back" @click.native="Back"/>
             <Button class="b" text="Next" @click.native="Next"/>
@@ -46,22 +52,23 @@
 
 <script lang='ts'>
     import {Component} from 'vue-property-decorator';
-    import {images} from "../index";
-    import Base from "./Base.vue";
-    import Button from "./Button.vue";
+    import {images} from "../../index";
+    import Base from "../Base.vue";
+    import Button from "../Button.vue";
 
     @Component({
         components: {Button}
     })
-    export default class FifthSlide extends Base {
-        image: string = images.install.five;
+    export default class SixthSlide extends Base {
+        six: string = images.install.six;
+        seven: string = images.install.seven;
 
         Next() {
-            this.Main.GoToSlide(5);
+            this.Main.GoToSlide(6);
         }
 
         Back() {
-            this.Main.BackToSlide(3);
+            this.Main.BackToSlide(4);
         }
     }
 </script>
