@@ -7,7 +7,7 @@
 
 
                 <div class="main-stats">
-                    <div class="number">{{TotalValue}}</div>
+                    <div class="number">{{DisplayTotalValue}}</div>
                     <div class="stat">{{total}}</div>
                 </div>
                 <canvas ref="key" style="{position: absolute}"/>
@@ -257,6 +257,10 @@
 
         get TotalValue(): number {
             return this.DataSet.Sum();
+        }
+
+        get DisplayTotalValue(): string {
+            return Commarize(this.TotalValue);
         }
 
         get Percentage(): string[] {

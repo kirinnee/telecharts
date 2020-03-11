@@ -108,6 +108,7 @@ function MessageParser(input: string): [Message[], string, string, string, strin
             }
 
         });
+    console.log(messages, user1, user2, handle1, handle2, start, end);
     return [messages, user1, user2, handle1, handle2, start, end];
 }
 
@@ -137,7 +138,7 @@ function ParseText(text: string): [number, number, { [k: string]: number }, numb
             emojis[e]++;
         }
     });
-    const heart = emojis["❤"] || 0;
+    const heart = text.Count("❤");
     return [char, count, emojis, eCount.length, heart];
 }
 

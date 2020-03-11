@@ -46,7 +46,23 @@
                            :colors="['#ffce56','#4bc0c0','#9966ff','#ff9f40','#ff6384','#36a2eb']"
                            :data="total"/>
                 <div class="numbers">
-                    <NumberStats/>
+
+
+                    <NumberStats title="Total Words Sent" :value="totalText.stats.totalWords"/>
+                    <!--                    <NumberStats title="Total Letters Sent" :value="totalText.stats.totalCharacters"/>-->
+                    <NumberStats title="Total Emojis Sent" :value="totalText.stats.totalEmoji"/>
+                    <NumberStats title="Total Hearts Sent" :value="totalText.stats.totalHeart"/>
+                </div>
+                <div class="numbers">
+                    <NumberStats title="Average Message/Day" :value="totalText.stats.averageMessagePerDay"/>
+                    <NumberStats title="Average Word/Message" :value="totalText.stats.averageWordCountPerMessage"/>
+                    <NumberStats title="Average Letter/Message"
+                                 :value="totalText.stats.averageCharacterCountPerMessage"/>
+                </div>
+                <div class="numbers">
+                    <NumberStats title="Average Message/Month" :value="totalText.stats.averageMessagePerMonth"/>
+                    <NumberStats title="Average Heart/Day" :value="totalText.stats.averageHeartPerDay"/>
+                    <NumberStats title="Average Emoji/Message" :value="totalText.stats.averageEmojiPerMessage"/>
                 </div>
             </div>
         </div>
@@ -58,18 +74,15 @@
 
         .row1 {
             display: flex;
-            position: relative;;
+            position: relative;
+            justify-content: space-evenly;
         }
 
-        .conversation, .media, .numbers {
-            margin: 40px 20px;
-        }
 
         .numbers {
             display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: flex-start;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .statistics {
@@ -147,11 +160,7 @@
         UpdateDate(val: any) {
             const f = new Date(val.from);
             const t = new Date(val.to);
-            if (this.updated) {
-                this.ReadjustData(f, t);
-                this.updated = false;
-                setTimeout(() => this.updated = true, 100);
-            }
+            this.ReadjustData(f, t);
         }
 
         ReadjustData(start: Date, end: Date): void {

@@ -26,16 +26,20 @@ class TextStatistic implements Updatable {
         const years = end.getFullYear() - start.getFullYear();
         const months = years * 12 + end.getMonth() - start.getMonth();
         const ONE_DAY = 1000 * 60 * 60 * 24;
-        const differenceMs = Math.abs(end.getMilliseconds() - start.getMilliseconds());
+
+        const differenceMs = Math.abs(end as any as number - (start as any) as number);
         const days = Math.round(differenceMs / ONE_DAY);
 
         const count = textMessages.length;
 
         this.stats.averageMessagePerMonth = count / months;
+        this.stats.averageHeartPerDay = this.stats.totalHeart / days;
         this.stats.averageMessagePerDay = count / days;
+
         this.stats.averageWordCountPerMessage = this.stats.totalWords / count;
         this.stats.averageCharacterCountPerMessage = this.stats.totalCharacters / count;
         this.stats.averageEmojiPerMessage = this.stats.totalEmoji / count;
+
 
         this.stats.highestWordCount = textMessages.Max((x) => x.words);
         this.stats.highestCharacterCount = textMessages.Max((x) => x.characters);
