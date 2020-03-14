@@ -3,9 +3,9 @@ import App from './App.vue';
 import './index.scss';
 import {router} from "./router";
 import {images} from './images';
-
-import HistogramSlider from 'vue-histogram-slider';
 import 'vue-histogram-slider/dist/histogram-slider.css';
+
+const HistogramSlider = require('vue-histogram-slider');
 
 Vue.config.productionTip = false;
 

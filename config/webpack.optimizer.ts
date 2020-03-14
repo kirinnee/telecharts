@@ -1,19 +1,27 @@
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import {Options} from "webpack";
+import TerserPlugin from "terser-webpack-plugin";
 
 
 let opti: Options.Optimization = {
+    minimize: true,
     minimizer: [
-        new UglifyJsPlugin({
-            uglifyOptions: {
-                compress: {
-                    drop_console: false,
-                    unsafe: true
+        new TerserPlugin({
+            parallel: true,
+            terserOptions: {
+                output: {
+                    comments: false,
                 },
-                output: {comments: false},
-                toplevel: true
-            }
-        })
+                compress: {
+                    drop_console: true,
+                    unsafe: true,
+                },
+                toplevel: true,
+                mangle: {
+                    toplevel: true,
+                }
+            },
+            extractComments: false,
+        }),
     ],
     splitChunks: {
         name: true,
