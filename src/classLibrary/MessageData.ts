@@ -22,62 +22,8 @@ interface RawMessageData {
     video: Message[];
     animatedSticker: Message[];
     nonAnimatedSticker: Message[];
-}
-
-function BreakdownMessage(messages: Message[]): RawMessageData {
-    const text: Message[] = [];
-    const photo: Message[] = [];
-    const audio: Message[] = [];
-    const document: Message[] = [];
-    const video: Message[] = [];
-    const animatedSticker: Message[] = [];
-    const nonAnimatedSticker: Message[] = [];
-
-    messages.Each(e => {
-        switch (e.type) {
-            case "audio":
-                audio.push(e);
-                break;
-            case "photo":
-                photo.push(e);
-                break;
-            case "sticker":
-                if (e.animated) {
-                    animatedSticker.push(e);
-                } else {
-                    nonAnimatedSticker.push(e);
-                }
-                break;
-            case "video":
-                video.push(e);
-                break;
-            case "document":
-                document.push(e);
-                break;
-            case "text":
-                text.push(e);
-                break;
-            default:
-                break;
-        }
-    });
-    return {
-        all: messages,
-        text, photo, audio, document, nonAnimatedSticker, animatedSticker, video
-    }
-}
-
-function SplitUser(message: Message[], user1: string): [Message[], Message[]] {
-    const u1: Message[] = [];
-    const u2: Message[] = [];
-    message.Each(e => {
-        if (e.sender == user1) {
-            u1.push(e)
-        } else {
-            u2.push(e);
-        }
-    });
-    return [u1, u2];
+    call: Message[];
+    missedCall: Message[];
 }
 
 
@@ -99,4 +45,4 @@ const GDMessageData = (): MessageData => {
 };
 
 
-export {MessageData, UserData, RawMessageData, GDMessageData, BreakdownMessage, SplitUser}
+export {MessageData, UserData, RawMessageData, GDMessageData}

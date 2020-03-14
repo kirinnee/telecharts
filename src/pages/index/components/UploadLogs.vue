@@ -27,43 +27,43 @@
                         :prettify="prettify"
                         :drag-interval="true"
                         :force-edges="false"
-                        :colors="['#4facfe', '#00f2fe']"
+
+
                         :min="start"
                         :max="end"/>
             </div>
             <div class="row1">
-                <PieChart class="conversation" ref="pie1" :width="650" :height="450"
+                <div class="numbers">
+                    <NumberStats title="Months" :value="months" w="340px" h="215px" fs="70px"/>
+                    <NumberStats title="Days" :value="days" w="340px" h="215px" fs="70px"/>
+                </div>
+                <PieChart class="conversation" ref="pie1" :width="670" :height="450"
                           title="Conversation Breakdown"
                           :labels="['Text', 'Photo', 'Audio', 'Document', 'Videos', 'Sticker']"
                           :keys="['text','photo','audio','document','video', 'sticker']"
                           :colors="['#ff6384','#36a2eb','#ffce56','#4bc0c0','#9966ff','#ff9f40']"
                           :data="total"
                           total="Messages"/>
-                <PolarArea class="media" ref="pie2" :width="650" :height="450"
+                <PolarArea class="media" ref="pie2" :width="670" :height="450"
                            title="Media Breakdown"
                            :labels="['Photo',  'Document','Audio', 'Animated Stickers', 'Normal Stickers' , 'Videos' ]"
                            :keys="['photo','document','audio','animatedSticker', 'nonAnimatedSticker', 'video' ]"
                            :colors="['#ffce56','#4bc0c0','#9966ff','#ff9f40','#ff6384','#36a2eb']"
                            :data="total"/>
                 <div class="numbers">
+                    <NumberStats title="Total Words Sent" :value="totalText.stats.totalWords" w="280px" h="140px"
+                                 fs="40px"/>
+                    <NumberStats title="Total Emojis Sent" :value="totalText.stats.totalEmoji" w="280px" h="140px"
+                                 fs="40px"/>
+                    <NumberStats title="Total Hearts Sent" :value="totalText.stats.totalHeart" w="280px" h="140px"
+                                 fs="40px"/>
+                </div>
+                <!--                <div class="numbers">-->
+                <!--                    <NumberStats title="Total Characters Sent" :value="totalText.stats.totalCharacters" w="260px" h="140px" fs="40px"/>-->
+                <!--                    <NumberStats title="Total Emojis Sent" :value="totalText.stats.totalEmoji" w="260px" h="140px" fs="40px"/>-->
+                <!--                    <NumberStats title="Total Hearts Sent" :value="totalText.stats.totalHeart" w="260px" h="140px" fs="40px"/>-->
+                <!--                </div>-->
 
-
-                    <NumberStats title="Total Words Sent" :value="totalText.stats.totalWords"/>
-                    <!--                    <NumberStats title="Total Letters Sent" :value="totalText.stats.totalCharacters"/>-->
-                    <NumberStats title="Total Emojis Sent" :value="totalText.stats.totalEmoji"/>
-                    <NumberStats title="Total Hearts Sent" :value="totalText.stats.totalHeart"/>
-                </div>
-                <div class="numbers">
-                    <NumberStats title="Average Message/Day" :value="totalText.stats.averageMessagePerDay"/>
-                    <NumberStats title="Average Word/Message" :value="totalText.stats.averageWordCountPerMessage"/>
-                    <NumberStats title="Average Letter/Message"
-                                 :value="totalText.stats.averageCharacterCountPerMessage"/>
-                </div>
-                <div class="numbers">
-                    <NumberStats title="Average Message/Month" :value="totalText.stats.averageMessagePerMonth"/>
-                    <NumberStats title="Average Heart/Day" :value="totalText.stats.averageHeartPerDay"/>
-                    <NumberStats title="Average Emoji/Message" :value="totalText.stats.averageEmojiPerMessage"/>
-                </div>
             </div>
         </div>
     </div>
@@ -120,7 +120,8 @@
     import PolarArea from "./PolarArea.vue";
     import {TextStatistic} from "../../../classLibrary/TextStatistic";
     import NumberStats from "./NumberStats.vue";
-    import {BreakdownMessage, GDMessageData, MessageData, SplitUser} from "../../../classLibrary/MessageData";
+    import {GDMessageData, MessageData} from "../../../classLibrary/MessageData";
+    import {BreakdownMessage, GetDuration, SplitUser} from "../../../classLibrary/Utility";
 
     @Component({
         components: {NumberStats, PolarArea, PieChart}
@@ -145,6 +146,9 @@
         data: Date[] = [];
         start: number = new Date(2019, 1, 1).valueOf();
         end: number = new Date().valueOf();
+
+        days: number = 0;
+        months: number = 0;
 
         prettify(ts: any) {
             return new Date(ts).toLocaleDateString("en", {
@@ -173,9 +177,13 @@
             const u1m = BreakdownMessage(u1);
             const u2m = BreakdownMessage(u2);
 
-            this.totalText.Set(total.text, start, end);
-            this.u1Text.Set(u1m.text, start, end);
-            this.u2Text.Set(u2m.text, start, end);
+            const [_, months, days] = GetDuration(start, end);
+            this.days = days;
+            this.months = months;
+            console.log(_);
+            this.totalText.Set(total.text, months, days);
+            this.u1Text.Set(u1m.text, months, days);
+            this.u2Text.Set(u2m.text, months, days);
 
             this.total.Set(total);
             this.user1.Set(u1m);

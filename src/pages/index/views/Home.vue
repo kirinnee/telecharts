@@ -98,8 +98,8 @@ import {EaseStrength} from "@kirinnee/kease";
             if (x == 7) {
                 const main: Element = (this.$refs["color"] as Element);
 
-                main.BackgroundColor(this.currentColor, "#c6c6c6", {duration: 500, ease: swing})
-                    .Promise.then(() => this.currentColor = "#c6c6c6");
+                main.BackgroundColor(this.currentColor, "#f3f5f9", {duration: 500, ease: swing})
+                    .Promise.then(() => this.currentColor = "#f3f5f9");
             } else {
                 this.ChangeColor(swing);
 

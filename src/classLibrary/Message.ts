@@ -1,11 +1,65 @@
 const em = require("extract-emoji");
 
+interface CallDuration {
+    hour: number;
+    minute: number;
+    second: number;
+    ColonFormat: string;
+    TotalMinutes: number;
+}
+
+const nullCallDuration: CallDuration = {
+    hour: -1,
+    minute: -1,
+    second: -1,
+    ColonFormat: "",
+    TotalMinutes: -1,
+};
+
+
+class CallDurationClass implements CallDuration {
+
+    hour: number;
+    minute: number;
+    second: number;
+
+    constructor(hour: number, minute: number, second: number) {
+        this.hour = hour;
+        this.minute = minute;
+        this.second = second;
+    }
+
+    get ColonFormat(): string {
+        let ret = "";
+        let startFlag = false;
+        if (this.hour > 0) {
+            ret += this.hour.toString() + ":";
+            startFlag = true;
+        }
+        if (this.minute > 0 || startFlag) {
+            ret += this.hour.toString() + ":";
+            startFlag = true;
+        }
+        if (this.second > 0 || startFlag) {
+            ret += this.hour.toString() + ":";
+        }
+        return ret;
+    }
+
+    get TotalMinutes(): number {
+        return this.minute + this.hour * 60
+    }
+
+
+}
 
 interface Message {
-    type: "text" | "audio" | "photo" | "sticker" | "video" | "document"
+    type: "text" | "audio" | "photo" | "sticker" | "video" | "document" | "call"
     time: Date
     sender: string
     handle: string
+
+    owner: boolean
 
     text: string
     characters: number
@@ -15,6 +69,9 @@ interface Message {
     heartCount: number;
 
     audioLength: number;
+
+    callDuration: CallDuration;
+    missed: boolean;
 
     animated: boolean;
 }
@@ -38,6 +95,7 @@ function MessageParser(input: string): [Message[], string, string, string, strin
             if (raw != null) {
                 const message: Message = {
                     type: "text",
+                    owner: raw.owner,
                     time: raw.time,
                     sender: raw.sender,
                     handle: raw.handle,
@@ -48,20 +106,26 @@ function MessageParser(input: string): [Message[], string, string, string, strin
                     emojiCount: 0,
                     heartCount: 0,
                     audioLength: -1,
+                    callDuration: nullCallDuration,
+                    missed: false,
                     animated: false,
                 };
-                if (user1 == "") {
-                    user1 = raw.sender;
-                } else if (user1 != raw.sender) {
-                    user2 = raw.sender;
-                }
 
-                if (handle1 == "") {
+                if (raw.owner) {
+                    user1 = raw.sender;
                     handle1 = raw.handle;
-                } else if (handle1 != raw.handle) {
+                } else {
+                    user2 = raw.sender;
                     handle2 = raw.handle;
                 }
-                if (CheckPhoto(raw.text)) {
+
+                if (raw.call) {
+                    message.type = "call";
+                    message.missed = raw.missed;
+                    if (!raw.missed) {
+                        message.callDuration = ExtractCallDuration(raw.text);
+                    }
+                } else if (CheckPhoto(raw.text)) {
                     message.type = "photo"
                 } else if (CheckVideo(raw.text)) {
                     message.type = "video"
@@ -108,10 +172,17 @@ function MessageParser(input: string): [Message[], string, string, string, strin
             }
 
         });
-    console.log(messages, user1, user2, handle1, handle2, start, end);
     return [messages, user1, user2, handle1, handle2, start, end];
 }
 
+
+function ExtractCallDuration(e: string): CallDuration {
+    const [h, m, s] = ("0:0:" + e.split(" ").Last()!)
+        .split(":")
+        .Last(3)
+        .Map(e => e.ToInt());
+    return new CallDurationClass(h, m, s);
+}
 
 function CheckPhoto(text: string): boolean {
     return text.Starts("[[Photo]]");
@@ -172,8 +243,11 @@ const isCharDigit = (n: any) => n < 10;
 interface RawMessage {
     time: Date;
     sender: string;
+    owner: boolean;
     handle: string;
     text: string;
+    call: boolean;
+    missed: boolean;
 }
 
 function CheckMessage(s: string): RawMessage | null {
@@ -193,6 +267,13 @@ function CheckMessage(s: string): RawMessage | null {
     let openFlag = 0;
     let closeFlag = 0;
     let you = true;
+
+    let owner = false;
+    let call = false;
+    if (s.Starts(".....")) {
+        call = true;
+        s = s.Skip(5);
+    }
 
     for (let i = 0; i < s.length; i++) {
         const c = s[i];
@@ -260,7 +341,7 @@ function CheckMessage(s: string): RawMessage | null {
             } else if (closeFlag == 2) {
                 if (you) {
                     if (c == "y" || c == "o" || c == "u" || c == ")" || c == ":") {
-
+                        owner = true;
                     } else if (c == " ") {
                         closeFlag++;
                     } else {
@@ -281,14 +362,18 @@ function CheckMessage(s: string): RawMessage | null {
 
     const m = month.ToInt() - 1;
     const time = new Date(year as any, m, day as any, hour as any, minute as any, second as any, 0);
+    let missed = call ? s.Ends(">>missed call<<") : false;
     return {
         time,
         sender: author,
+        owner,
         handle,
         text,
+        call,
+        missed,
     };
 
 }
 
 
-export {Message, MessageParser}
+export {Message, MessageParser, CallDuration}

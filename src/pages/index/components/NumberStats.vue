@@ -1,14 +1,12 @@
 <template>
-    <div class="c-holder">
+    <div class="c-holder" :style="{width:w, height: h} ">
         <div class="title">{{title}}</div>
-        <div class="value">{{Display}}</div>
+        <div class="value" :style="{fontSize: fs}">{{Display}}</div>
     </div>
 </template>
 
 <style lang='scss' scoped>
     .c-holder {
-        width: 270px;
-        height: 140px;
         position: relative;
         background-color: white;
         border-radius: 5px;
@@ -41,13 +39,15 @@
         props: {
             title: String,
             value: Number,
+            w: String,
+            h: String,
+            fs: String,
         }
     })
     export default class NumberStats extends Vue {
         value?: number;
 
         get Display(): string {
-            console.log(this.value);
             return Commarize(this.value!.toFixed(2).ToFloat());
         }
     }

@@ -17,20 +17,14 @@ class TextStatistic implements Updatable {
 
     };
 
-    Set(textMessages: Message[], start: Date, end: Date): void {
+    Set(textMessages: Message[], months: number, days: number): void {
+
+        const count = textMessages.length;
+
         this.stats.totalWords = textMessages.Sum(x => x.words);
         this.stats.totalCharacters = textMessages.Sum(x => x.characters);
         this.stats.totalEmoji = textMessages.Sum(x => x.emojiCount);
         this.stats.totalHeart = textMessages.Sum(x => x.heartCount);
-
-        const years = end.getFullYear() - start.getFullYear();
-        const months = years * 12 + end.getMonth() - start.getMonth();
-        const ONE_DAY = 1000 * 60 * 60 * 24;
-
-        const differenceMs = Math.abs(end as any as number - (start as any) as number);
-        const days = Math.round(differenceMs / ONE_DAY);
-
-        const count = textMessages.length;
 
         this.stats.averageMessagePerMonth = count / months;
         this.stats.averageHeartPerDay = this.stats.totalHeart / days;
