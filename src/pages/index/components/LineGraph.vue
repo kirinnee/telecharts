@@ -61,7 +61,7 @@
             bar: Boolean,
         }
     })
-    export default class PieChart extends Vue {
+    export default class LineGraph extends Vue {
 
         title?: string;
         data?: Updatable;
