@@ -16,7 +16,7 @@
             <img :src="loader" class="loader">
         </div>
         <div v-show="upload&&loaded" class="statistics">
-
+            <MessageShow v-if='renderMessage' :message="renderedMessage"/>
             <div v-if="loaded">
                 <HistogramSlider
                         @finish="UpdateDate"
@@ -70,9 +70,12 @@
 
                                :x-axis="DayRange"
 
+                               :y-axis="['a','b']"
                                :line-style="{
-                               message: {label: 'Number of Messages', color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               averageWord: {label: 'Average Word Per Message', color: '#36a2eb', areaColor: '#36a2eb30', fill: true},
+                               message: {label: 'Number of Messages', yAxis: 'a',
+                               color: '#ff6384', areaColor: '#ff638430', fill: true},
+                               averageWord: {label: 'Average Word Per Message', yAxis:'b',
+                                color: '#36a2eb', areaColor: '#36a2eb30', fill: true},
                            }"
 
                                :height="370"
@@ -87,9 +90,12 @@
 
                                :x-axis="['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sunday']"
 
+                               :y-axis="['a','b']"
                                :line-style="{
-                               message: {label: 'Number of Messages', color: '#7ad0d0', areaColor: '#7ad0d030', fill: true},
-                               averageWord: {label: 'Average Word Per Message', color: '#ffa74f', areaColor: '#ffa74f30', fill: true},
+                               message: {label: 'Number of Messages', yAxis: 'a',
+                               color: '#7ad0d0', areaColor: '#7ad0d030', fill: true},
+                               averageWord: {label: 'Average Word Per Message', yAxis: 'b',
+                               color: '#ffa74f', areaColor: '#ffa74f30', fill: true},
                            }"
 
                                :height="370"
@@ -104,9 +110,13 @@
 
                                :x-axis="DayRange"
 
+
+                               :y-axis="['a','b']"
                                :line-style="{
-                               emoji: {label: 'Number of Emoji', color: '#fed062', areaColor: '#fed06230', fill: false, straight: true},
-                               heart: {label: 'Number of Hearts', color: '#ba97ff', areaColor: '#ba97ff30', fill: false, straight: true},
+                               emoji: {label: 'Number of Emoji', yAxis: 'a',
+                               color: '#fed062', areaColor: '#fed06230', fill: false, straight: true},
+                               heart: {label: 'Number of Hearts',yAxis: 'b',
+                               color: '#ba97ff', areaColor: '#ba97ff30', fill: false, straight: true},
                            }"
 
                                :height="370"
@@ -155,9 +165,12 @@
                                                         , '2100 - 2159', '2200 - 2259', '2300 - 2359'
                             ]"
 
+                            :y-axis="['a','b']"
                             :line-style="{
-                               message: {label: 'Number of Messages', color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               averageWord: {label: 'Average Word Per Message', color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
+                               message: {label: 'Number of Messages', yAxis: 'a',
+                               color: '#ff6384', areaColor: '#ff638430', fill: true},
+                               averageWord: {label: 'Average Word Per Message', yAxis: 'b',
+                               color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
                             }"
 
                             :height="465"
@@ -170,7 +183,74 @@
                     />
                 </div>
                 <div class="row">
+                    <div class="c">
+                        <div class="r b-margin">
+                            <HighScores
+                                    title="Highest Word Count"
+                                    value="words"
+                                    :message="totalText.stats.highestWordCount"
+                                    units="words"
 
+                                    w="240px"
+                                    h="170px"
+                                    :fs="34"
+                            />
+                            <HighScores
+                                    title="Highest Character Count"
+                                    value="characters"
+                                    :message="totalText.stats.highestCharacterCount"
+                                    units="Characters"
+
+                                    w="240px"
+                                    h="170px"
+                                    :fs="34"
+                            />
+                            <HighScores
+                                    title="Highest Emoji Count"
+                                    value="emojiCount"
+                                    :message="totalText.stats.highestEmojiCount"
+                                    units="Emojis"
+
+                                    w="240px"
+                                    h="170px"
+                                    :fs="34"
+                            />
+                            <HighScores
+                                    title="Highest Heart Count"
+                                    value="heartCount"
+                                    :message="totalText.stats.highestHeartMessage"
+                                    units="Hearts"
+
+                                    w="240px"
+                                    h="170px"
+                                    :fs="34"
+                            />
+                        </div>
+                        <LineGraph
+                                ref="line6" title="Media Per Day"
+                                :data="textGraph.stats.hours"
+                                :keys="['message','averageWord']"
+
+                                :bar="true"
+                                :x-axis-all="true"
+
+                                :x-axis="['0000 - 0059', '0100 - 0159', '0200 - 0259', '0300 - 0359', '0400 - 0459', '0500 - 0559', '0600 - 0659',
+                            '0700 - 0759', '0800 - 0859', '0900 - 0959', '1000 - 1059', '1100 - 1159', '1200 - 1259', '1300 - 1359',
+                                                        '1400 - 1459', '1500 - 1559', '1600 - 1659', '1700 - 1759', '1800 - 1859', '1900 - 1959', '2000 - 2059'
+                                                        , '2100 - 2159', '2200 - 2259', '2300 - 2359'
+                            ]"
+                                :y-axis="['a','b']"
+                                :line-style="{
+                               message: {label: 'Number of Messages', yAxis: 'a',
+                               color: '#ff6384', areaColor: '#ff638430', fill: true},
+                               averageWord: {label: 'Average Word Per Message', yAxis: 'b',
+                               color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
+                            }"
+
+                                :height="550"
+                                :width="1000"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -239,7 +319,7 @@
 
 <script lang='ts'>
     import {Component, Vue} from 'vue-property-decorator';
-    import {MessageParser} from "../../../classLibrary/Message";
+    import {Message, MessageParser} from "../../../classLibrary/Message";
     import {MessageTypeStatistic} from "../../../classLibrary/MessageTypeStatistic";
     import PieChart from "./PieChart.vue";
     import PolarArea from "./PolarArea.vue";
@@ -259,6 +339,8 @@
     import convo from "!!raw-loader!./sample.txt";
     import {EmojiDataSet} from "../../../classLibrary/EmojiDataSet";
     import EmojiChart from "./EmojiChart.vue";
+    import MessageShow from "./MessageShow.vue";
+    import HighScores from "./HighScores.vue";
 
 
     enum Page {
@@ -270,7 +352,7 @@
 
 
     @Component({
-        components: {EmojiChart, LineGraph, NumberStats, PolarArea, PieChart}
+        components: {HighScores, MessageShow, EmojiChart, LineGraph, NumberStats, PolarArea, PieChart}
     })
 
     export default class UploadLogs extends Vue {
@@ -278,7 +360,7 @@
         upload = false;
         loaded = false;
 
-        instaLoad = false;
+        instaLoad = true;
 
         messageData: MessageData = GDMessageData();
 
@@ -305,6 +387,9 @@
         start: number = new Date(2019, 1, 1).valueOf();
         end: number = new Date().valueOf();
 
+        renderedMessage: Message | undefined = undefined;
+        renderMessage: boolean = false;
+
         currentStart: Date = new Date(this.start);
         currentEnd: Date = new Date(this.end);
 
@@ -313,6 +398,11 @@
         days: number = 0;
         months: number = 0;
 
+
+        ShowText(show: boolean, text?: Message) {
+            this.renderMessage = show;
+            this.renderedMessage = text;
+        }
 
         get DayRange(): string[] {
             return GenerateDayRange(this.currentStart, this.currentEnd).Map(x => x.toLocaleDateString("en-US", {
@@ -411,6 +501,7 @@
         mounted() {
             if (this.instaLoad) {
                 this.upload = true;
+                (this.$parent as any).DashBoardColor();
                 this.HandleFileLoad({
                     target: {
                         result: convo

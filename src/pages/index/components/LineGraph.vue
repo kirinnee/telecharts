@@ -54,6 +54,7 @@
             keys: Array,
 
             xAxis: Array,
+            yAxis: Array,
 
             lineStyle: Object,
             width: Number,
@@ -69,6 +70,7 @@
         keys?: string[];
 
         xAxis?: any[];
+        yAxis?: string[];
 
         lineStyle?: { [s: string]: LineStyle };
 
@@ -124,7 +126,7 @@
                 const ls = this.lineStyle![e];
                 return {
                     label: ls.label,
-                    yAxisID: ls.label,
+                    yAxisID: ls.yAxis,
                     data: this.data!.Updated[e] as number[],
                     backgroundColor: ls.areaColor,
                     borderColor: ls.color,
@@ -133,18 +135,19 @@
                     type: ls.type,
                     pointStyle: ls.pointStyle,
                     lineTension: ls.straight ? 0 : undefined,
+                    borderWidth: 1
                 }
             })
         }
 
         get YAxes(): ChartXAxe[] {
-            return this.DataSet.Map((e, i) => {
+            return this.yAxis!.Map((e, i) => {
                 return {
                     gridLines: {
                         drawTicks: false,
                         drawOnChartArea: i == 0,
                     },
-                    id: e.label,
+                    id: e,
                     display: true,
                     position: i % 2 == 0 ? 'left' : 'right',
                     type: 'linear'

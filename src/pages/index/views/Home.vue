@@ -2,13 +2,13 @@
     <div class="main" ref="color">
         <div class="app">
             <UploadLogs ref="upload" class="upload"/>
-            <SeventhSlide ref="seventh" class="seventh"/>
-            <SixthSlide ref="sixth" class="sixth"/>
-            <FifthSlide ref="fifth" class="fifth"/>
-            <FourthSlide ref="fourth" class="fourth"/>
-            <ThirdSlide ref="third" class="third"/>
-            <SecondSlide ref="second" class="second"/>
-            <FirstSlide ref="first" class="first"/>
+            <!--            <SeventhSlide ref="seventh" class="seventh"/>-->
+            <!--            <SixthSlide ref="sixth" class="sixth"/>-->
+            <!--            <FifthSlide ref="fifth" class="fifth"/>-->
+            <!--            <FourthSlide ref="fourth" class="fourth"/>-->
+            <!--            <ThirdSlide ref="third" class="third"/>-->
+            <!--            <SecondSlide ref="second" class="second"/>-->
+            <!--            <FirstSlide ref="first" class="first"/>-->
         </div>
     </div>
 </template>
@@ -25,7 +25,7 @@
         height: 100vh;
 
         .second, .third, .fourth, .fifth, .sixth, .seventh,
-        .upload
+            /*.upload*/
         {
 
             left: 100%;
@@ -85,8 +85,8 @@
         }
 
         ChangeColor(ease: kEasing) {
-            const main: Element = (this.$refs["color"] as Element);
 
+            const main: Element = (this.$refs["color"] as Element);
             let nextColor: string = this.Colors.Random()!;
             while (nextColor == this.currentColor) {
                 nextColor = this.Colors.Random()!;
@@ -95,13 +95,17 @@
                 .Promise.then(() => this.currentColor = nextColor);
         }
 
+        DashBoardColor() {
+            const swing = eases.Swing(EaseStrength.Linear);
+            const main: Element = (this.$refs["color"] as Element);
+            main.BackgroundColor(this.currentColor, "#f3f5f9", {duration: 500, ease: swing})
+                .Promise.then(() => this.currentColor = "#f3f5f9");
+        }
+
         GoToSlide(x: number) {
             const swing = eases.Swing(EaseStrength.Linear);
             if (x == 7) {
-                const main: Element = (this.$refs["color"] as Element);
-
-                main.BackgroundColor(this.currentColor, "#f3f5f9", {duration: 500, ease: swing})
-                    .Promise.then(() => this.currentColor = "#f3f5f9");
+                this.DashBoardColor();
             } else {
                 this.ChangeColor(swing);
 

@@ -165,6 +165,7 @@ function MessageParser(input: string): [Message[], string, string, string, strin
                 const last = messages.Last()!;
                 last.characters += char;
                 last.words += word;
+                last.text += e;
                 for (let k in emoji) {
                     if (emoji.hasOwnProperty(k)) {
                         if (last.emoji[k] == null) {
