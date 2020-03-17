@@ -11,6 +11,7 @@ Build:
   tags:
     - frontend
   script:
+    - touch ./src/pages/index/components/sample.txt
     - yarn install --prefer-offline
     - yarn build
   artifacts:
@@ -22,7 +23,6 @@ Deploy:
   tags:
     - frontend
   script:
-    - touch ./src/pages/index/components/sample.txt
     - cd config
     - deployimage deploy
     - cd ../dist
