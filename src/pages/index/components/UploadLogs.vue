@@ -364,7 +364,7 @@
         upload = false;
         loaded = false;
 
-        instaLoad = true;
+        instaLoad = false;
 
         messageData: MessageData = GDMessageData();
 
@@ -510,8 +510,8 @@
         }
 
         mounted() {
-            (this.$parent as any).DashBoardColor();
             if (this.instaLoad) {
+                (this.$parent as any).DashBoardColor();
                 this.upload = true;
                 this.HandleFileLoad({
                     target: {
