@@ -16,6 +16,11 @@ const nullCallDuration: CallDuration = {
     TotalMinutes: -1,
 };
 
+enum CallType {
+    pass,
+    missed,
+    cancel,
+}
 
 class CallDurationClass implements CallDuration {
 
@@ -71,7 +76,7 @@ interface Message {
     audioLength: number;
 
     callDuration: CallDuration;
-    missed: boolean;
+    callType: CallType;
 
     animated: boolean;
 }
@@ -107,7 +112,7 @@ function MessageParser(input: string): [Message[], string, string, string, strin
                     heartCount: 0,
                     audioLength: -1,
                     callDuration: nullCallDuration,
-                    missed: false,
+                    callType: CallType.pass,
                     animated: false,
                 };
 
@@ -121,8 +126,8 @@ function MessageParser(input: string): [Message[], string, string, string, strin
 
                 if (raw.call) {
                     message.type = "call";
-                    message.missed = raw.missed;
-                    if (!raw.missed) {
+                    message.callType = raw.callType;
+                    if (raw.callType == CallType.pass) {
                         message.callDuration = ExtractCallDuration(raw.text);
                     }
                 } else if (CheckPhoto(raw.text)) {
@@ -247,7 +252,7 @@ interface RawMessage {
     handle: string;
     text: string;
     call: boolean;
-    missed: boolean;
+    callType: CallType;
 }
 
 function CheckMessage(s: string): RawMessage | null {
@@ -362,7 +367,14 @@ function CheckMessage(s: string): RawMessage | null {
 
     const m = month.ToInt() - 1;
     const time = new Date(year as any, m, day as any, hour as any, minute as any, second as any, 0);
-    let missed = call ? s.Ends(">>missed call<<") : false;
+    let callType = CallType.pass;
+    if (call) {
+        if (s.Ends(">>missed call<<")) {
+            callType = CallType.missed;
+        } else if (s.Ends(">>cancelled call<<")) {
+            callType = CallType.cancel;
+        }
+    }
     return {
         time,
         sender: author,
@@ -370,10 +382,10 @@ function CheckMessage(s: string): RawMessage | null {
         handle,
         text,
         call,
-        missed,
+        callType,
     };
 
 }
 
 
-export {Message, MessageParser, CallDuration}
+export {Message, MessageParser, CallDuration, CallType}

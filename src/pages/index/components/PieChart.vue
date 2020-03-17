@@ -4,9 +4,7 @@
         <h1>{{title}}</h1>
         <div class="stats">
             <div class="canvas-holder" :style="{width: ChartWidth, height: ChartHeight}">
-
-
-                <div class="main-stats">
+                <div v-if='!pie' class="main-stats">
                     <div class="number">{{DisplayTotalValue}}</div>
                     <div class="stat">{{total}}</div>
                 </div>
@@ -35,6 +33,8 @@
             padding: 10px 20px;
             margin: 0;
         }
+
+        box-shadow: 1px 1px 4px 4px rgba(136, 136, 136, 0.1);
 
         background-color: white;
         position: relative;
@@ -138,6 +138,7 @@
             total: String,
             width: Number,
             height: Number,
+            pie: Boolean,
         }
     })
     export default class PieChart extends Vue {
@@ -149,8 +150,10 @@
         width?: number;
         height?: number;
         chart?: Chart;
+        pie?: boolean;
 
-        check: boolean[] = this.labels!.Map(e => true).Map((_, i) => !this.UsedIndex.Has(i));
+        check: boolean[] = this.labels!.Map(e => true);
+
 
         Invert(i: number): void {
             this.$set(this.check, i, !this.check[i]);
@@ -202,7 +205,7 @@
         mounted() {
             const pie1 = this.$refs["key"]! as HTMLCanvasElement;
             this.chart = new Chart(pie1, {
-                type: 'doughnut',
+                type: this.pie ? 'doughnut' : 'pie',
                 data: {
                     labels: this.UsedLabels,
                     datasets: [{
@@ -218,7 +221,7 @@
                     responsive: true,
                     responsiveAnimationDuration: 1000,
                     maintainAspectRatio: false,
-                    cutoutPercentage: 70,
+                    cutoutPercentage: this.pie ? 0 : 70,
                     animation: {
                         animateRotate: false,
                         animateScale: false,
@@ -264,7 +267,7 @@
         }
 
         get Percentage(): string[] {
-            return this.DataSet.Map(e => (e / this.TotalValue * 100)
+            return this.DataSet.Map(e => ((e / this.TotalValue || 0) * 100)
                 .toFixed(1).toString() + "%")
 
         }

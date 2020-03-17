@@ -1,4 +1,4 @@
-import {Message} from "./Message";
+import {CallType, Message} from "./Message";
 import {RawMessageData} from "./MessageData";
 
 function BreakdownMessage(messages: Message[]): RawMessageData {
@@ -11,6 +11,7 @@ function BreakdownMessage(messages: Message[]): RawMessageData {
     const nonAnimatedSticker: Message[] = [];
     const call: Message[] = [];
     const missedCall: Message[] = [];
+    const cancelledCall: Message[] = [];
 
     messages.Each(e => {
         switch (e.type) {
@@ -37,10 +38,17 @@ function BreakdownMessage(messages: Message[]): RawMessageData {
                 text.push(e);
                 break;
             case "call":
-                if (e.missed) {
-                    missedCall.push(e);
-                } else {
-                    call.push(e);
+                switch (e.callType) {
+                    case CallType.pass:
+                        call.push(e);
+                        break;
+                    case CallType.missed:
+                        missedCall.push(e);
+                        break;
+                    case CallType.cancel:
+                        cancelledCall.push(e);
+                        break;
+
                 }
                 break;
             default:
@@ -58,6 +66,7 @@ function BreakdownMessage(messages: Message[]): RawMessageData {
         video,
         call,
         missedCall,
+        cancelledCall,
     }
 }
 
@@ -74,9 +83,40 @@ function SplitUser(message: Message[], user1: string): [Message[], Message[]] {
     return [u1, u2];
 }
 
+function GenerateDayRange(start: Date, end: Date): Date[] {
+    let prev = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const ret = [];
+    const last = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23);
+    while (prev < last) {
+        ret.push(prev);
+        const clone = new Date(prev.getFullYear(), prev.getMonth(), prev.getDate());
+        clone.setDate(clone.getDate() + 1);
+        prev = clone;
+    }
+
+    return ret;
+}
+
+function GenerateMonthRange(start: Date, end: Date): string[] {
+    const ret = [];
+    const prev = new Date(start.getFullYear(), start.getMonth());
+    const last = new Date(end.getFullYear(), end.getMonth(), 29);
+    const op = {year: 'numeric', month: 'long'};
+    while (prev < last) {
+        ret.push(prev.toLocaleDateString("en-US", op));
+        prev.setMonth(prev.getMonth() + 1);
+    }
+    return ret;
+}
+
 function GetDuration(start: Date, end: Date): [number, number, number] {
     const years = end.getFullYear() - start.getFullYear();
-    const months = years * 12 + end.getMonth() - start.getMonth();
+
+    start = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    end = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+    const months = years * 12 + end.getMonth() - start.getMonth() + 1;
+
     const ONE_DAY = 1000 * 60 * 60 * 24;
 
     const differenceMs = Math.abs(end as any as number - (start as any) as number);
@@ -84,5 +124,11 @@ function GetDuration(start: Date, end: Date): [number, number, number] {
     return [years, months, days];
 }
 
+function NumberFormatter(i: number | null | undefined, unit: string, def: string): string {
+    if (i == null) return def;
+    else {
+        return i!.toString() + " " + unit;
+    }
+}
 
-export {SplitUser, BreakdownMessage, GetDuration}
+export {SplitUser, BreakdownMessage, GetDuration, GenerateDayRange, GenerateMonthRange, NumberFormatter}

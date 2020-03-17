@@ -29,6 +29,8 @@
             margin: 0;
         }
 
+        box-shadow: 1px 1px 4px 4px rgba(136, 136, 136, 0.1);
+
         background-color: white;
         position: relative;
         flex-direction: row;
@@ -238,7 +240,7 @@
         }
 
         get Percentage(): string[] {
-            return this.DataSet.Map(e => (e / this.TotalValue * 100)
+            return this.DataSet.Map(e => ((e / this.TotalValue || 0) * 100)
                 .toFixed(1).toString() + "%")
 
         }

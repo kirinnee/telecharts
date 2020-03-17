@@ -8,6 +8,9 @@
 </template>
 
 <style lang='scss' scoped>
+    .nav-bar {
+        position: fixed;
+    }
 </style>
 
 <script lang='ts'>

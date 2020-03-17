@@ -1,7 +1,7 @@
 <template>
     <div class="c-holder" :style="{width:w, height: h} ">
-        <div class="title">{{title}}</div>
-        <div class="value" :style="{fontSize: fs}">{{Display}}</div>
+        <div class="title" :style="{fontSize: TitleFS}">{{title}}</div>
+        <div class="value" :style="{fontSize: MainFS}">{{Display}}</div>
     </div>
 </template>
 
@@ -10,8 +10,10 @@
         position: relative;
         background-color: white;
         border-radius: 5px;
+        box-shadow: 1px 1px 4px 4px rgba(136, 136, 136, 0.1);
 
         .title {
+            position: relative;
             padding: 20px;
             font-family: Raleway, sans-serif;
             color: rgba(0, 0, 0, 0.7);
@@ -39,16 +41,29 @@
         props: {
             title: String,
             value: Number,
+            textVal: String,
             w: String,
             h: String,
-            fs: String,
+            fs: Number,
         }
     })
     export default class NumberStats extends Vue {
         value?: number;
+        textVal?: string;
+        fs?: number;
+
+        get MainFS(): string {
+            return this.fs!.toString() + "px";
+        }
+
+
+        get TitleFS(): string {
+            return (this.fs! / 2.5).toString() + "px";
+        }
 
         get Display(): string {
-            return Commarize(this.value!.toFixed(2).ToFloat());
+            return this.textVal || Commarize(this.value!.toFixed(2).ToFloat());
+
         }
     }
 </script>

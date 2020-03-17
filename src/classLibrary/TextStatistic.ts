@@ -20,38 +20,58 @@ class TextStatistic implements Updatable {
     Set(textMessages: Message[], months: number, days: number): void {
 
         const count = textMessages.length;
+        if (count > 0) {
+            this.stats.totalWords = textMessages.Sum(x => x.words);
+            this.stats.totalCharacters = textMessages.Sum(x => x.characters);
+            this.stats.totalEmoji = textMessages.Sum(x => x.emojiCount);
+            this.stats.totalHeart = textMessages.Sum(x => x.heartCount);
 
-        this.stats.totalWords = textMessages.Sum(x => x.words);
-        this.stats.totalCharacters = textMessages.Sum(x => x.characters);
-        this.stats.totalEmoji = textMessages.Sum(x => x.emojiCount);
-        this.stats.totalHeart = textMessages.Sum(x => x.heartCount);
+            this.stats.averageMessagePerMonth = count / months || 0;
+            this.stats.averageHeartPerDay = this.stats.totalHeart / days || 0;
+            this.stats.averageMessagePerDay = count / days || 0;
 
-        this.stats.averageMessagePerMonth = count / months;
-        this.stats.averageHeartPerDay = this.stats.totalHeart / days;
-        this.stats.averageMessagePerDay = count / days;
-
-        this.stats.averageWordCountPerMessage = this.stats.totalWords / count;
-        this.stats.averageCharacterCountPerMessage = this.stats.totalCharacters / count;
-        this.stats.averageEmojiPerMessage = this.stats.totalEmoji / count;
+            this.stats.averageWordCountPerMessage = this.stats.totalWords / count;
+            this.stats.averageCharacterCountPerMessage = this.stats.totalCharacters / count;
+            this.stats.averageEmojiPerMessage = this.stats.totalEmoji / count;
 
 
-        this.stats.highestWordCount = textMessages.Max((x) => x.words);
-        this.stats.highestCharacterCount = textMessages.Max((x) => x.characters);
-        this.stats.highestEmojiCount = textMessages.Max((x) => x.emojiCount);
-        this.stats.highestHeartMessage = textMessages.Max(x => x.heartCount);
+            this.stats.highestWordCount = textMessages.Max((x) => x.words);
+            this.stats.highestCharacterCount = textMessages.Max((x) => x.characters);
+            this.stats.highestEmojiCount = textMessages.Max((x) => x.emojiCount);
+            this.stats.highestHeartMessage = textMessages.Max(x => x.heartCount);
 
-        if (this.stats.highestHeartMessage.heartCount == 0)
+            if (this.stats.highestHeartMessage.heartCount == 0)
+                delete this.stats.highestHeartMessage;
+
+            if (this.stats.highestWordCount.words == 0)
+                delete this.stats.highestWordCount;
+
+            if (this.stats.highestCharacterCount.characters == 0)
+                delete this.stats.highestCharacterCount;
+
+
+            if (this.stats.highestEmojiCount.emojiCount == 0)
+                delete this.stats.highestEmojiCount;
+        } else {
+
+            this.stats.totalWords = 0;
+            this.stats.totalEmoji = 0;
+            this.stats.totalHeart = 0;
+            this.stats.totalCharacters = 0;
+            this.stats.averageMessagePerMonth = 0;
+            this.stats.averageHeartPerDay = 0;
+            this.stats.averageMessagePerDay = 0;
+            this.stats.averageWordCountPerMessage = 0;
+            this.stats.averageCharacterCountPerMessage = 0;
+            this.stats.averageEmojiPerMessage = 0;
+
             delete this.stats.highestHeartMessage;
-
-        if (this.stats.highestWordCount.words == 0)
             delete this.stats.highestWordCount;
-
-        if (this.stats.highestCharacterCount.characters == 0)
             delete this.stats.highestCharacterCount;
-
-
-        if (this.stats.highestEmojiCount.emojiCount == 0)
             delete this.stats.highestEmojiCount;
+
+        }
+
 
     }
 

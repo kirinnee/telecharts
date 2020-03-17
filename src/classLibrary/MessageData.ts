@@ -24,6 +24,7 @@ interface RawMessageData {
     nonAnimatedSticker: Message[];
     call: Message[];
     missedCall: Message[];
+    cancelledCall: Message[];
 }
 
 

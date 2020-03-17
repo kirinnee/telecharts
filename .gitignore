@@ -7,3 +7,4 @@ coverage/
 !.idea/*.xml
 .idea/workspace.xml
 .idea/vcs.xml
+**/*/sample.txt

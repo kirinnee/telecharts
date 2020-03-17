@@ -14,6 +14,7 @@ let opti: Options.Optimization = {
                 compress: {
                     drop_console: true,
                     unsafe: true,
+
                 },
                 toplevel: true,
                 mangle: {
