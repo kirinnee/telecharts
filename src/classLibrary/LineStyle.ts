@@ -5,7 +5,7 @@ interface LineStyle {
     color: string;
     areaColor: string;
     yAxis: string;
-    borderDash?: [number, number];
+    dash?: [number, number];
     fill: boolean;
     straight: boolean;
     type?: string;

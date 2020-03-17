@@ -227,25 +227,28 @@
                             />
                         </div>
                         <LineGraph
-                                ref="line6" title="Media Per Day"
-                                :data="textGraph.stats.hours"
-                                :keys="['message','averageWord']"
+                                ref="line5" title="Media Per Day"
+                                :data="mediaGraph"
+                                :keys="['sticker','photo', 'document', 'video', 'audio']"
 
-                                :bar="true"
-                                :x-axis-all="true"
+                                :bar="false"
+                                :x-axis-all="false"
 
-                                :x-axis="['0000 - 0059', '0100 - 0159', '0200 - 0259', '0300 - 0359', '0400 - 0459', '0500 - 0559', '0600 - 0659',
-                            '0700 - 0759', '0800 - 0859', '0900 - 0959', '1000 - 1059', '1100 - 1159', '1200 - 1259', '1300 - 1359',
-                                                        '1400 - 1459', '1500 - 1559', '1600 - 1659', '1700 - 1759', '1800 - 1859', '1900 - 1959', '2000 - 2059'
-                                                        , '2100 - 2159', '2200 - 2259', '2300 - 2359'
-                            ]"
+                                :x-axis="DayRange"
                                 :y-axis="['a','b']"
                                 :line-style="{
-                               message: {label: 'Number of Messages', yAxis: 'a',
-                               color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               averageWord: {label: 'Average Word Per Message', yAxis: 'b',
-                               color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
-                            }"
+                                    sticker: {label: '# of Stickers', yAxis: 'a',
+                                            color:'#36a2eb' , areaColor:'#36a2eb30' , fill: true,
+                                            dash: [5,5], pointStyle: 'star'},
+                                    photo: {label: '# of Photos', yAxis: 'b', straight: true,
+                                            color: '#ff6384', areaColor:  '#ff638430', fill: false},
+                                    document: {label: '# of Documents', yAxis: 'b', straight: true,
+                                            color: '#ffce56', areaColor: '#ffce5630', fill: false},
+                                    video: {label: '# of Videos', yAxis: 'b', straight: true,
+                                            color: '#4bc0c0', areaColor: '#4bc0c030', fill: false},
+                                    audio: {label: '# of Audios', yAxis: 'b', straight: true,
+                                            color: '#9966ff', areaColor: '#9966ff30', fill: false},
+                                }"
 
                                 :height="550"
                                 :width="1000"
@@ -341,6 +344,7 @@
     import EmojiChart from "./EmojiChart.vue";
     import MessageShow from "./MessageShow.vue";
     import HighScores from "./HighScores.vue";
+    import {TimeScaleMediaStatistic} from "../../../classLibrary/TimeScaleMediaStatistic";
 
 
     enum Page {
@@ -369,18 +373,21 @@
         textGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
         callNumbers: CallStatistic = new CallStatistic();
         emojiDS: EmojiDataSet = new EmojiDataSet();
+        mediaGraph: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
 
         user1: MessageTypeStatistic = new MessageTypeStatistic();
         u1Text: TextStatistic = new TextStatistic();
         u1TextGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
         u1callNumbers: CallStatistic = new CallStatistic();
         u1emojiDS: EmojiDataSet = new EmojiDataSet();
+        u1mediaGraph: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
 
         user2: MessageTypeStatistic = new MessageTypeStatistic();
         u2Text: TextStatistic = new TextStatistic();
         u2TextGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
         u2callNumbers: CallStatistic = new CallStatistic();
         u2emojiDS: EmojiDataSet = new EmojiDataSet();
+        u2mediaGraph: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
 
 
         data: Date[] = [];
@@ -452,6 +459,7 @@
                 this.textGraph.Set(total.text, start, days, months);
                 this.callNumbers.Set(total.call, total.missedCall, total.cancelledCall, months, days);
                 this.emojiDS.Set(total.text);
+                this.mediaGraph.Set(total.photo, total.audio, total.video, total.document, total.animatedSticker.Add(total.nonAnimatedSticker), start, days, months);
             } else {
                 const [u1, u2] = SplitUser(adjustedMessages, this.messageData.user1.name);
 
@@ -463,6 +471,7 @@
                     this.u1TextGraph.Set(u1m.text, start, days, months);
                     this.u1callNumbers.Set(u1m.call, u1m.missedCall, u1m.cancelledCall, months, days);
                     this.u1emojiDS.Set(u1m.text);
+                    this.u1mediaGraph.Set(u1m.photo, u1m.audio, u1m.video, u1m.document, u1m.animatedSticker.Add(u1m.nonAnimatedSticker), start, days, months);
                 } else if (this.page == Page.user2) {
 
                     const u2m = BreakdownMessage(u2);
@@ -471,6 +480,8 @@
                     this.u2TextGraph.Set(u2m.text, start, days, months);
                     this.u2callNumbers.Set(u2m.call, u2m.missedCall, u2m.cancelledCall, months, days);
                     this.u2emojiDS.Set(u2m.text);
+                    this.u2mediaGraph.Set(u2m.photo, u2m.audio, u2m.video, u2m.document, u2m.animatedSticker.Add(u2m.nonAnimatedSticker), start, days, months);
+
                 }
 
             }
@@ -482,7 +493,7 @@
         }
 
         ReRenderAll() {
-            ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4"].Each(e => {
+            ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4", "line5"].Each(e => {
                 (this.$refs[e] as any).Rerender();
             });
         }
@@ -499,9 +510,9 @@
         }
 
         mounted() {
+            (this.$parent as any).DashBoardColor();
             if (this.instaLoad) {
                 this.upload = true;
-                (this.$parent as any).DashBoardColor();
                 this.HandleFileLoad({
                     target: {
                         result: convo

@@ -130,7 +130,7 @@
                     data: this.data!.Updated[e] as number[],
                     backgroundColor: ls.areaColor,
                     borderColor: ls.color,
-                    borderDash: ls.borderDash,
+                    borderDash: ls.dash,
                     fill: ls.fill,
                     type: ls.type,
                     pointStyle: ls.pointStyle,
