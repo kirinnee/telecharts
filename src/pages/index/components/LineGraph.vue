@@ -59,6 +59,7 @@
             width: Number,
             height: Number,
             bar: Boolean,
+            xAxisAll: Boolean,
         }
     })
     export default class LineGraph extends Vue {
@@ -77,6 +78,7 @@
         bar?: boolean;
 
         chart?: Chart;
+        xAxisAll?: boolean;
 
 
         get EffectiveHeight(): number {
@@ -128,6 +130,8 @@
                     borderColor: ls.color,
                     borderDash: ls.borderDash,
                     fill: ls.fill,
+                    type: ls.type,
+                    pointStyle: ls.pointStyle,
                     lineTension: ls.straight ? 0 : undefined,
                 }
             })
@@ -177,12 +181,7 @@
                                 drawTicks: true,
                                 drawOnChartArea: false,
                             },
-                            // type: 'time',
-                            // time: {
-                            //     parser: 'DD/MM/YYYY',
-                            //     tooltipFormat: 'DD/MM/YYYY',
-                            // },
-                            ticks: {
+                            ticks: this.xAxisAll ? {} : {
                                 autoSkipPadding: 40,
                                 maxRotation: 0,
                             },

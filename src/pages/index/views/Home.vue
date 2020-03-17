@@ -2,13 +2,13 @@
     <div class="main" ref="color">
         <div class="app">
             <UploadLogs ref="upload" class="upload"/>
-            <!--            <SeventhSlide ref="seventh" class="seventh"/>-->
-            <!--            <SixthSlide ref="sixth" class="sixth"/>-->
-            <!--            <FifthSlide ref="fifth" class="fifth"/>-->
-            <!--            <FourthSlide ref="fourth" class="fourth"/>-->
-            <!--            <ThirdSlide ref="third" class="third"/>-->
-            <!--            <SecondSlide ref="second" class="second"/>-->
-            <!--            <FirstSlide ref="first" class="first"/>-->
+            <SeventhSlide ref="seventh" class="seventh"/>
+            <SixthSlide ref="sixth" class="sixth"/>
+            <FifthSlide ref="fifth" class="fifth"/>
+            <FourthSlide ref="fourth" class="fourth"/>
+            <ThirdSlide ref="third" class="third"/>
+            <SecondSlide ref="second" class="second"/>
+            <FirstSlide ref="first" class="first"/>
         </div>
     </div>
 </template>
@@ -25,7 +25,7 @@
         height: 100vh;
 
         .second, .third, .fourth, .fifth, .sixth, .seventh,
-            /*.upload */
+        .upload
         {
 
             left: 100%;

@@ -20,9 +20,10 @@
             <div v-if="loaded">
                 <HistogramSlider
                         @finish="UpdateDate"
-                        style="margin: 20px auto"
+                        style="margin: 0 auto 10px auto"
                         :width="600"
-                        :bar-height="50"
+                        :bar-height="40"
+                        :bar-width="3"
                         :data="data"
                         :prettify="prettify"
                         :drag-interval="true"
@@ -71,14 +72,13 @@
 
                                :line-style="{
                                message: {label: 'Number of Messages', color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               // emoji: {label: 'Number of Emojis', color: '#ff6384', areaColor: '#ff6384', fill: false},
                                averageWord: {label: 'Average Word Per Message', color: '#36a2eb', areaColor: '#36a2eb30', fill: true},
                            }"
 
                                :height="370"
                                :width="660"
                     />
-                    <LineGraph ref="line2" title="Daily Statistics"
+                    <LineGraph ref="line2" title="Daily Text Statistics"
                                :data="textGraph.stats.dayOfWeek"
                                :keys="['message','averageWord']"
 
@@ -141,6 +141,36 @@
                                       total="Calls"/>
                         </div>
                     </div>
+                    <LineGraph
+                            ref="line4" title="Text on Different hours of the day"
+                            :data="textGraph.stats.hours"
+                            :keys="['message','averageWord']"
+
+                            :bar="true"
+                            :x-axis-all="true"
+
+                            :x-axis="['0000 - 0059', '0100 - 0159', '0200 - 0259', '0300 - 0359', '0400 - 0459', '0500 - 0559', '0600 - 0659',
+                            '0700 - 0759', '0800 - 0859', '0900 - 0959', '1000 - 1059', '1100 - 1159', '1200 - 1259', '1300 - 1359',
+                                                        '1400 - 1459', '1500 - 1559', '1600 - 1659', '1700 - 1759', '1800 - 1859', '1900 - 1959', '2000 - 2059'
+                                                        , '2100 - 2159', '2200 - 2259', '2300 - 2359'
+                            ]"
+
+                            :line-style="{
+                               message: {label: 'Number of Messages', color: '#ff6384', areaColor: '#ff638430', fill: true},
+                               averageWord: {label: 'Average Word Per Message', color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
+                            }"
+
+                            :height="465"
+                            :width="900"
+                    />
+                    <EmojiChart
+                            :width="500" :height="465"
+                            title="Most Used Emojis"
+                            :emoji="emojiDS"
+                    />
+                </div>
+                <div class="row">
+
                 </div>
             </div>
         </div>
@@ -227,6 +257,8 @@
     import {TimeScaleTextStatistic} from "../../../classLibrary/TimeScaleTextStatistic";
     import {CallStatistic} from "../../../classLibrary/CallStatistic";
     import convo from "!!raw-loader!./sample.txt";
+    import {EmojiDataSet} from "../../../classLibrary/EmojiDataSet";
+    import EmojiChart from "./EmojiChart.vue";
 
 
     enum Page {
@@ -238,7 +270,7 @@
 
 
     @Component({
-        components: {LineGraph, NumberStats, PolarArea, PieChart}
+        components: {EmojiChart, LineGraph, NumberStats, PolarArea, PieChart}
     })
 
     export default class UploadLogs extends Vue {
@@ -254,16 +286,19 @@
         totalText: TextStatistic = new TextStatistic();
         textGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
         callNumbers: CallStatistic = new CallStatistic();
+        emojiDS: EmojiDataSet = new EmojiDataSet();
 
         user1: MessageTypeStatistic = new MessageTypeStatistic();
         u1Text: TextStatistic = new TextStatistic();
         u1TextGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
         u1callNumbers: CallStatistic = new CallStatistic();
+        u1emojiDS: EmojiDataSet = new EmojiDataSet();
 
         user2: MessageTypeStatistic = new MessageTypeStatistic();
         u2Text: TextStatistic = new TextStatistic();
         u2TextGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
         u2callNumbers: CallStatistic = new CallStatistic();
+        u2emojiDS: EmojiDataSet = new EmojiDataSet();
 
 
         data: Date[] = [];
@@ -326,6 +361,7 @@
                 this.total.Set(total);
                 this.textGraph.Set(total.text, start, days, months);
                 this.callNumbers.Set(total.call, total.missedCall, total.cancelledCall, months, days);
+                this.emojiDS.Set(total.text);
             } else {
                 const [u1, u2] = SplitUser(adjustedMessages, this.messageData.user1.name);
 
@@ -336,6 +372,7 @@
                     this.user1.Set(u1m);
                     this.u1TextGraph.Set(u1m.text, start, days, months);
                     this.u1callNumbers.Set(u1m.call, u1m.missedCall, u1m.cancelledCall, months, days);
+                    this.u1emojiDS.Set(u1m.text);
                 } else if (this.page == Page.user2) {
 
                     const u2m = BreakdownMessage(u2);
@@ -343,6 +380,7 @@
                     this.user2.Set(u2m);
                     this.u2TextGraph.Set(u2m.text, start, days, months);
                     this.u2callNumbers.Set(u2m.call, u2m.missedCall, u2m.cancelledCall, months, days);
+                    this.u2emojiDS.Set(u2m.text);
                 }
 
             }
@@ -354,7 +392,7 @@
         }
 
         ReRenderAll() {
-            ["pie1", "pie2", "pie3", "line1", "line2", "line3"].Each(e => {
+            ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4"].Each(e => {
                 (this.$refs[e] as any).Rerender();
             });
         }
