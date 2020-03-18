@@ -17,7 +17,8 @@
         </div>
         <div v-show="upload&&loaded" class="statistics">
             <MessageShow v-if='renderMessage' :message="renderedMessage"/>
-            <div v-if="loaded" style="background-color: rgb(243, 245, 249)">
+            <div v-if="loaded" style="background-color: #fcfcfc; position: relative">
+
                 <HistogramSlider
                         @finish="UpdateDate"
                         style="margin: 0 auto 10px auto"
@@ -32,6 +33,24 @@
 
                         :min="start"
                         :max="end"/>
+                <div class="nav-bar">
+                    <div class="nav-ele" :class="All" @click="ToPage1">
+                        <div class="nav-icon-holder"></div>
+                        <div class="nav-item">All Users</div>
+                    </div>
+                    <div class="nav-ele" :class="First" @click="ToPage2">
+                        <div class="nav-icon-holder"></div>
+                        <div class="nav-item">{{messageData.user1.name}}</div>
+                    </div>
+                    <div class="nav-ele" :class="Second" @click="ToPage3">
+                        <div class="nav-icon-holder"></div>
+                        <div class="nav-item">{{messageData.user2.name}}</div>
+                    </div>
+                    <div class="nav-ele" :class="Compare" @click="ToPage4">
+                        <div class="nav-icon-holder"></div>
+                        <div class="nav-item">Comparison</div>
+                    </div>
+                </div>
             </div>
             <div class="charts">
                 <div class="row">
@@ -53,11 +72,11 @@
                                :colors="['#ffce56','#4bc0c0','#9966ff','#ff9f40','#ff6384','#36a2eb']"
                                :data="total"/>
                     <div class="c">
-                        <NumberStats title="Total Words Sent" :value="totalText.stats.totalWords" w="280px" h="140px"
+                        <NumberStats title="Total Words Sent" :value="text.stats.totalWords" w="280px" h="140px"
                                      :fs="40"/>
-                        <NumberStats title="Total Emojis Sent" :value="totalText.stats.totalEmoji" w="280px" h="140px"
+                        <NumberStats title="Total Emojis Sent" :value="text.stats.totalEmoji" w="280px" h="140px"
                                      :fs="40"/>
-                        <NumberStats title="Total Hearts Sent" :value="totalText.stats.totalHeart" w="280px" h="140px"
+                        <NumberStats title="Total Hearts Sent" :value="text.stats.totalHeart" w="280px" h="140px"
                                      :fs="40"/>
                     </div>
                 </div>
@@ -179,7 +198,7 @@
                     <EmojiChart
                             :width="500" :height="465"
                             title="Most Used Emojis"
-                            :emoji="emojiDS"
+                            :emoji="emoji"
                     />
                 </div>
                 <div class="row">
@@ -188,7 +207,7 @@
                             <HighScores
                                     title="Highest Word Count"
                                     value="words"
-                                    :message="totalText.stats.highestWordCount"
+                                    :message="text.stats.highestWordCount"
                                     units="words"
 
                                     w="240px"
@@ -198,7 +217,7 @@
                             <HighScores
                                     title="Highest Character Count"
                                     value="characters"
-                                    :message="totalText.stats.highestCharacterCount"
+                                    :message="text.stats.highestCharacterCount"
                                     units="Characters"
 
                                     w="240px"
@@ -208,7 +227,7 @@
                             <HighScores
                                     title="Highest Emoji Count"
                                     value="emojiCount"
-                                    :message="totalText.stats.highestEmojiCount"
+                                    :message="text.stats.highestEmojiCount"
                                     units="Emojis"
 
                                     w="240px"
@@ -218,7 +237,7 @@
                             <HighScores
                                     title="Highest Heart Count"
                                     value="heartCount"
-                                    :message="totalText.stats.highestHeartMessage"
+                                    :message="text.stats.highestHeartMessage"
                                     units="Hearts"
 
                                     w="240px"
@@ -228,7 +247,7 @@
                         </div>
                         <LineGraph
                                 ref="line5" title="Media Per Day"
-                                :data="mediaGraph"
+                                :data="media"
                                 :keys="['sticker','photo', 'document', 'video', 'audio']"
 
                                 :bar="false"
@@ -288,9 +307,9 @@
                                         :label-f-s="12"
                                         :value-f-s="25"
                                         :data="[
-                                        ['Per Month', totalText.stats.averageHeartPerMonth,'#5a8dee'],
-                                        ['Per Day', totalText.stats.averageHeartPerDay, '#00cfdd'],
-                                        ['Per Message', totalText.stats.averageHeartPerMessage,'#3adb8b'],
+                                        ['Per Month', text.stats.averageHeartPerMonth,'#5a8dee'],
+                                        ['Per Day', text.stats.averageHeartPerDay, '#00cfdd'],
+                                        ['Per Message', text.stats.averageHeartPerMessage,'#3adb8b'],
                                     ]"
                                 />
                                 <MultiStats
@@ -299,9 +318,9 @@
                                         :label-f-s="12"
                                         :value-f-s="25"
                                         :data="[
-                                        ['Per Month', totalText.stats.averageWordPerMonth,'#ff5b5c'],
-                                        ['Per Day', totalText.stats.averageWordPerDay, '#fdac41'],
-                                        ['Per Message', totalText.stats.averageWordPerMessage,'#475f7b'],
+                                        ['Per Month', text.stats.averageWordPerMonth,'#ff5b5c'],
+                                        ['Per Day', text.stats.averageWordPerDay, '#fdac41'],
+                                        ['Per Message', text.stats.averageWordPerMessage,'#475f7b'],
                                     ]"
                                 />
                                 <MultiStats
@@ -310,9 +329,9 @@
                                         :label-f-s="12"
                                         :value-f-s="25"
                                         :data="[
-                                        ['Per Month', totalText.stats.averageEmojiPerMonth,'#9771e3'],
-                                        ['Per Day', totalText.stats.averageEmojiPerDay, '#22d676'],
-                                        ['Per Message', totalText.stats.averageEmojiPerMessage,'#ff8426'],
+                                        ['Per Month', text.stats.averageEmojiPerMonth,'#9771e3'],
+                                        ['Per Day', text.stats.averageEmojiPerDay, '#22d676'],
+                                        ['Per Message', text.stats.averageEmojiPerMessage,'#ff8426'],
                                     ]"
                                 />
                             </div>
@@ -333,6 +352,46 @@
 </template>
 
 <style lang='scss' scoped>
+    .nav-bar {
+        display: flex;
+        position: absolute;
+        bottom: 0;
+        left: 12px;
+
+        .nav-ele {
+            padding: 10px 20px;
+            margin: 0 3px;
+            background-color: rgb(243, 245, 249);
+            user-select: none;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+            border-top: 1px solid transparent;
+            border-right: 1px solid transparent;
+            border-left: 1px solid transparent;
+            cursor: pointer;
+
+            &:hover {
+                border-top: 1px solid black;
+                border-right: 1px solid black;
+                border-left: 1px solid black;
+            }
+        }
+
+        .selected {
+            border-top: 1px solid black;
+            border-right: 1px solid black;
+            border-left: 1px solid black;
+        }
+
+        .nav-item {
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+        }
+
+    }
+
+
     .holder {
 
         .row {
@@ -400,7 +459,7 @@
     import PolarArea from "./PolarArea.vue";
     import {TextStatistic} from "../../../classLibrary/TextStatistic";
     import NumberStats from "./NumberStats.vue";
-    import {GDMessageData, MessageData} from "../../../classLibrary/MessageData";
+    import {GDMessageData, MessageData, RawMessageData} from "../../../classLibrary/MessageData";
     import {
         BreakdownMessage,
         GenerateDayRange,
@@ -443,27 +502,12 @@
         messageData: MessageData = GDMessageData();
 
         total: MessageTypeStatistic = new MessageTypeStatistic();
-        totalText: TextStatistic = new TextStatistic();
+        text: TextStatistic = new TextStatistic();
         textGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
         callNumbers: CallStatistic = new CallStatistic();
-        emojiDS: EmojiDataSet = new EmojiDataSet();
-        mediaGraph: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
+        emoji: EmojiDataSet = new EmojiDataSet();
+        media: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
         audio: AudioStatistics = new AudioStatistics();
-
-        user1: MessageTypeStatistic = new MessageTypeStatistic();
-        u1Text: TextStatistic = new TextStatistic();
-        u1TextGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
-        u1callNumbers: CallStatistic = new CallStatistic();
-        u1emojiDS: EmojiDataSet = new EmojiDataSet();
-        u1mediaGraph: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
-
-        user2: MessageTypeStatistic = new MessageTypeStatistic();
-        u2Text: TextStatistic = new TextStatistic();
-        u2TextGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
-        u2callNumbers: CallStatistic = new CallStatistic();
-        u2emojiDS: EmojiDataSet = new EmojiDataSet();
-        u2mediaGraph: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
-
 
         data: Date[] = [];
         start: number = new Date(2019, 1, 1).valueOf();
@@ -479,6 +523,47 @@
 
         days: number = 0;
         months: number = 0;
+
+        ToPage1() {
+            this.page = Page.all;
+            this.ReadjustData(this.currentStart, this.currentEnd);
+        }
+
+
+        ToPage2() {
+            this.page = Page.user1;
+            this.ReadjustData(this.currentStart, this.currentEnd);
+        }
+
+
+        ToPage3() {
+            this.page = Page.user2;
+            this.ReadjustData(this.currentStart, this.currentEnd);
+        }
+
+
+        ToPage4() {
+            this.page = Page.compare;
+            this.ReadjustData(this.currentStart, this.currentEnd);
+        }
+
+        get All(): string {
+            return this.page == Page.all ? 'selected' : '';
+        }
+
+        get First(): string {
+            return this.page == Page.user1 ? 'selected' : '';
+        }
+
+
+        get Second(): string {
+            return this.page == Page.user2 ? 'selected' : '';
+        }
+
+
+        get Compare(): string {
+            return this.page == Page.compare ? 'selected' : '';
+        }
 
 
         ShowText(show: boolean, text?: Message) {
@@ -505,6 +590,7 @@
             });
         }
 
+        // Event
         UpdateDate(val: any) {
             const f = new Date(val.from);
             const t = new Date(val.to);
@@ -526,41 +612,41 @@
             this.months = months;
 
 
-            if (this.page == Page.all) {
+            let all: RawMessageData = {
+                all: [],
+                text: [],
+                photo: [],
+                audio: [],
+                document: [],
+                video: [],
+                animatedSticker: [],
+                nonAnimatedSticker: [],
+                call: [],
+                missedCall: [],
+                cancelledCall: []
+            };
 
-                const total = BreakdownMessage(adjustedMessages);
-                this.totalText.Set(total.text, months, days);
-                this.total.Set(total);
-                this.textGraph.Set(total.text, start, days, months);
-                this.callNumbers.Set(total.call, total.missedCall, total.cancelledCall, months, days);
-                this.emojiDS.Set(total.text);
-                this.mediaGraph.Set(total.photo, total.audio, total.video, total.document, total.animatedSticker.Add(total.nonAnimatedSticker), start, days, months);
-                this.audio.Set(total.audio, months, days);
+            if (this.page == Page.all) {
+                all = BreakdownMessage(adjustedMessages);
+
             } else {
                 const [u1, u2] = SplitUser(adjustedMessages, this.messageData.user1.name);
-
                 if (this.page == Page.user1) {
 
-                    const u1m = BreakdownMessage(u1);
-                    this.u1Text.Set(u1m.text, months, days);
-                    this.user1.Set(u1m);
-                    this.u1TextGraph.Set(u1m.text, start, days, months);
-                    this.u1callNumbers.Set(u1m.call, u1m.missedCall, u1m.cancelledCall, months, days);
-                    this.u1emojiDS.Set(u1m.text);
-                    this.u1mediaGraph.Set(u1m.photo, u1m.audio, u1m.video, u1m.document, u1m.animatedSticker.Add(u1m.nonAnimatedSticker), start, days, months);
+                    all = BreakdownMessage(u1);
                 } else if (this.page == Page.user2) {
-
-                    const u2m = BreakdownMessage(u2);
-                    this.u2Text.Set(u2m.text, months, days);
-                    this.user2.Set(u2m);
-                    this.u2TextGraph.Set(u2m.text, start, days, months);
-                    this.u2callNumbers.Set(u2m.call, u2m.missedCall, u2m.cancelledCall, months, days);
-                    this.u2emojiDS.Set(u2m.text);
-                    this.u2mediaGraph.Set(u2m.photo, u2m.audio, u2m.video, u2m.document, u2m.animatedSticker.Add(u2m.nonAnimatedSticker), start, days, months);
+                    all = BreakdownMessage(u2);
 
                 }
 
             }
+            this.text.Set(all.text, months, days);
+            this.total.Set(all);
+            this.textGraph.Set(all.text, start, days, months);
+            this.callNumbers.Set(all.call, all.missedCall, all.cancelledCall, months, days);
+            this.emoji.Set(all.text);
+            this.media.Set(all.photo, all.audio, all.video, all.document, all.animatedSticker.Add(all.nonAnimatedSticker), start, days, months);
+            this.audio.Set(all.audio, months, days);
 
             Vue.nextTick().then(() => {
                 this.ReRenderAll();
@@ -602,9 +688,9 @@
             return [
                 {
                     label: 'Number of Message / Month',
-                    value: this.totalText.stats.averageMessagePerMonth.ToInt().toString()
+                    value: this.text.stats.averageMessagePerMonth.ToInt().toString()
                 },
-                {label: 'Number of Message / Day', value: this.totalText.stats.averageMessagePerDay.ToInt().toString()},
+                {label: 'Number of Message / Day', value: this.text.stats.averageMessagePerDay.ToInt().toString()},
                 {
                     label: 'Avg Call Duration',
                     value: this.callNumbers.stats.averageDuration.ToInt().toString() + " mins"
