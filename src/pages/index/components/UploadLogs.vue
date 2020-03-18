@@ -17,7 +17,7 @@
         </div>
         <div v-show="upload&&loaded" class="statistics">
             <MessageShow v-if='renderMessage' :message="renderedMessage"/>
-            <div v-if="loaded">
+            <div v-if="loaded" style="background-color: rgb(243, 245, 249)">
                 <HistogramSlider
                         @finish="UpdateDate"
                         style="margin: 0 auto 10px auto"
@@ -250,7 +250,7 @@
                                             color: '#9966ff', areaColor: '#9966ff30', fill: false},
                                 }"
 
-                                :height="550"
+                                :height="560"
                                 :width="1000"
                         />
                     </div>
@@ -317,20 +317,13 @@
                                 />
                             </div>
                         </div>
-                        <div class="r">
-                            <NumberStats title="Minutes Called" :value="callNumbers.stats.totalDuration"
-                                         w="181px"
-                                         h="100px"
-                                         :fs="24"/>
-                            <NumberStats title="Longest Call"
-                                         :text-val="callNumbers.stats.longestCallText"
-                                         w="181px" h="100px"
-                                         :fs="24"/>
-                            <NumberStats title="Shortest Call"
-                                         :text-val="callNumbers.stats.shortestCallText"
-                                         w="181px"
-                                         h="100px"
-                                         :fs="24"/>
+                        <div class="r" :style="{flexWrap: 'wrap', width: '987px' }">
+                            <NumberStats v-for="(v,i) in Stats" :key="i" :style="{marginTop: '12px' }"
+                                         :title="v.label" :text-val="v.value"
+                                         w="235px"
+                                         h="140px"
+                                         :fs="30"/>
+
                         </div>
                     </div>
                 </div>
@@ -425,6 +418,7 @@
     import HighScores from "./HighScores.vue";
     import {TimeScaleMediaStatistic} from "../../../classLibrary/TimeScaleMediaStatistic";
     import MultiStats from "./MultiStats.vue";
+    import {AudioStatistics} from "../../../classLibrary/AudioStatistics";
 
 
     enum Page {
@@ -454,6 +448,7 @@
         callNumbers: CallStatistic = new CallStatistic();
         emojiDS: EmojiDataSet = new EmojiDataSet();
         mediaGraph: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
+        audio: AudioStatistics = new AudioStatistics();
 
         user1: MessageTypeStatistic = new MessageTypeStatistic();
         u1Text: TextStatistic = new TextStatistic();
@@ -540,6 +535,7 @@
                 this.callNumbers.Set(total.call, total.missedCall, total.cancelledCall, months, days);
                 this.emojiDS.Set(total.text);
                 this.mediaGraph.Set(total.photo, total.audio, total.video, total.document, total.animatedSticker.Add(total.nonAnimatedSticker), start, days, months);
+                this.audio.Set(total.audio, months, days);
             } else {
                 const [u1, u2] = SplitUser(adjustedMessages, this.messageData.user1.name);
 
@@ -600,6 +596,32 @@
                     }
                 });
             }
+        }
+
+        get Stats(): { label: string, value: string }[] {
+            return [
+                {
+                    label: 'Number of Message / Month',
+                    value: this.totalText.stats.averageMessagePerMonth.ToInt().toString()
+                },
+                {label: 'Number of Message / Day', value: this.totalText.stats.averageMessagePerDay.ToInt().toString()},
+                {
+                    label: 'Avg Call Duration',
+                    value: this.callNumbers.stats.averageDuration.ToInt().toString() + " mins"
+                },
+                {
+                    label: 'Call Duration / Day',
+                    value: this.callNumbers.stats.averageDurationPerDay.toFixed(1) + " mins"
+                },
+                {
+                    label: 'Call Duration / Month',
+                    value: this.callNumbers.stats.averageDurationPerMonth.toFixed(1) + " mins"
+                },
+                {label: 'Total Audio Duration', value: this.audio.totalDuration},
+                {label: 'Avg Audio Duration', value: this.audio.avgDuration},
+                {label: 'Audio Duration / Day', value: this.audio.avgDurationPerDay},
+                // {label: 'Audio Duration / Month', value: this.audio.avgDurationPerMonth},
+            ];
         }
 
 

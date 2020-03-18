@@ -58,8 +58,8 @@
 
     @Component({
         props: {
-            w: String,
-            h: String,
+            w: Number,
+            h: Number,
             title: String,
             titleFS: Number,
             labelFS: Number,
