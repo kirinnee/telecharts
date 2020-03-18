@@ -9,12 +9,23 @@ class TextStatistic implements Updatable {
         totalHeart: 0,
 
         averageMessagePerMonth: 0,
-        averageHeartPerDay: 0,
         averageMessagePerDay: 0,
-        averageWordCountPerMessage: 0,
-        averageCharacterCountPerMessage: 0,
-        averageEmojiPerMessage: 0,
 
+        averageHeartPerMonth: 0,
+        averageHeartPerDay: 0,
+        averageHeartPerMessage: 0,
+
+        averageWordPerMonth: 0,
+        averageWordPerDay: 0,
+        averageWordPerMessage: 0,
+
+        averageCharacterPerMonth: 0,
+        averageCharacterPerDay: 0,
+        averageCharacterPerMessage: 0,
+
+        averageEmojiPerDay: 0,
+        averageEmojiPerMessage: 0,
+        averageEmojiPerMonth: 0,
     };
 
     Set(textMessages: Message[], months: number, days: number): void {
@@ -26,12 +37,25 @@ class TextStatistic implements Updatable {
             this.stats.totalEmoji = textMessages.Sum(x => x.emojiCount);
             this.stats.totalHeart = textMessages.Sum(x => x.heartCount);
 
+
             this.stats.averageMessagePerMonth = count / months || 0;
-            this.stats.averageHeartPerDay = this.stats.totalHeart / days || 0;
             this.stats.averageMessagePerDay = count / days || 0;
 
-            this.stats.averageWordCountPerMessage = this.stats.totalWords / count;
-            this.stats.averageCharacterCountPerMessage = this.stats.totalCharacters / count;
+            this.stats.averageHeartPerMonth = this.stats.totalHeart / months || 0;
+            this.stats.averageHeartPerDay = this.stats.totalHeart / days || 0;
+            this.stats.averageHeartPerMessage = this.stats.totalHeart / count;
+
+            this.stats.averageWordPerMonth = this.stats.totalWords / months || 0;
+            this.stats.averageWordPerDay = this.stats.totalWords / days || 0;
+            this.stats.averageWordPerMessage = this.stats.totalWords / count;
+
+
+            this.stats.averageCharacterPerMonth = this.stats.totalCharacters / months || 0;
+            this.stats.averageCharacterPerDay = this.stats.totalCharacters / days || 0;
+            this.stats.averageCharacterPerMessage = this.stats.totalCharacters / count;
+
+            this.stats.averageEmojiPerMonth = this.stats.totalEmoji / months || 0;
+            this.stats.averageEmojiPerDay = this.stats.totalEmoji / days || 0;
             this.stats.averageEmojiPerMessage = this.stats.totalEmoji / count;
 
 
@@ -58,12 +82,25 @@ class TextStatistic implements Updatable {
             this.stats.totalEmoji = 0;
             this.stats.totalHeart = 0;
             this.stats.totalCharacters = 0;
+
             this.stats.averageMessagePerMonth = 0;
-            this.stats.averageHeartPerDay = 0;
             this.stats.averageMessagePerDay = 0;
-            this.stats.averageWordCountPerMessage = 0;
-            this.stats.averageCharacterCountPerMessage = 0;
+
+            this.stats.averageHeartPerMonth = 0;
+            this.stats.averageHeartPerDay = 0;
+            this.stats.averageHeartPerMessage = 0;
+
+            this.stats.averageWordPerMonth = 0;
+            this.stats.averageWordPerDay = 0;
+            this.stats.averageWordPerMessage = 0;
+
+            this.stats.averageCharacterPerMonth = 0;
+            this.stats.averageCharacterPerDay = 0;
+            this.stats.averageCharacterPerMessage = 0;
+
+            this.stats.averageEmojiPerDay = 0;
             this.stats.averageEmojiPerMessage = 0;
+            this.stats.averageEmojiPerMonth = 0;
 
             delete this.stats.highestHeartMessage;
             delete this.stats.highestWordCount;
@@ -87,11 +124,24 @@ interface TextStats {
     totalHeart: number;
 
     averageMessagePerMonth: number;
-    averageHeartPerDay: number;
     averageMessagePerDay: number;
-    averageWordCountPerMessage: number;
-    averageCharacterCountPerMessage: number;
+
+    averageHeartPerMonth: number;
+    averageHeartPerDay: number;
+    averageHeartPerMessage: number;
+
+    averageWordPerMonth: number;
+    averageWordPerDay: number;
+    averageWordPerMessage: number;
+
+    averageCharacterPerMonth: number;
+    averageCharacterPerDay: number;
+    averageCharacterPerMessage: number;
+
+    averageEmojiPerDay: number;
     averageEmojiPerMessage: number;
+    averageEmojiPerMonth: number;
+
 
     highestWordCount?: Message;
     highestCharacterCount?: Message;

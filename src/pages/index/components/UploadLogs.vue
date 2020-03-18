@@ -235,24 +235,54 @@
                                 :x-axis-all="false"
 
                                 :x-axis="DayRange"
-                                :y-axis="['a','b']"
+                                :y-axis="['a','b','c','d','e']"
                                 :line-style="{
                                     sticker: {label: '# of Stickers', yAxis: 'a',
                                             color:'#36a2eb' , areaColor:'#36a2eb30' , fill: true,
                                             dash: [5,5], pointStyle: 'star'},
-                                    photo: {label: '# of Photos', yAxis: 'b', straight: true,
+                                    photo: {label: '# of Photos', yAxis: 'b', straight: false,
                                             color: '#ff6384', areaColor:  '#ff638430', fill: false},
-                                    document: {label: '# of Documents', yAxis: 'b', straight: true,
+                                    document: {label: '# of Documents', yAxis: 'c', straight: false,
                                             color: '#ffce56', areaColor: '#ffce5630', fill: false},
-                                    video: {label: '# of Videos', yAxis: 'b', straight: true,
+                                    video: {label: '# of Videos', yAxis: 'd', straight: false,
                                             color: '#4bc0c0', areaColor: '#4bc0c030', fill: false},
-                                    audio: {label: '# of Audios', yAxis: 'b', straight: true,
+                                    audio: {label: '# of Audios', yAxis: 'e', straight: false,
                                             color: '#9966ff', areaColor: '#9966ff30', fill: false},
                                 }"
 
                                 :height="550"
                                 :width="1000"
                         />
+                    </div>
+                    <div class="r">
+                        <LineGraph
+                                ref="line6" title="Text per Month"
+                                :data="textGraph.stats.months"
+                                :keys="['message','averageWord', 'heart','emoji']"
+
+                                :bar="true"
+                                :x-axis-all="false"
+
+                                :x-axis="MonthRange"
+
+                                :y-axis="['a','b', 'c','d']"
+                                :line-style="{
+                               averageWord: {label: 'Avg Word/Message', yAxis: 'b',
+                                color: '#7ad0d0', areaColor: '#7ad0d030', fill: false, pointStyle: 'star'},
+                               emoji: {label: '# of Emoji', yAxis: 'd',
+                                color: '#fed062', areaColor: '#fed06290', fill: false},
+                               heart: {label: '# of Hearts', yAxis: 'c',
+                                color: '#ba97ff', areaColor: '#ba97ff90', fill: true},
+                               message: {label: '# of Messages', yAxis: 'a', type: 'line',
+                                color: '#475f7b', areaColor: '#475f7b30', fill: true},
+                            }"
+
+                                :height="500"
+                                :width="600"
+                        />
+                        <div class="c">
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -493,9 +523,10 @@
         }
 
         ReRenderAll() {
-            ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4", "line5"].Each(e => {
-                (this.$refs[e] as any).Rerender();
-            });
+            ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4", "line5", "line6"]
+                .Each(e => {
+                    (this.$refs[e] as any).Rerender();
+                });
         }
 
 

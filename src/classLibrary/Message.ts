@@ -183,7 +183,8 @@ function MessageParser(input: string): [Message[], string, string, string, strin
 
 
 function ExtractCallDuration(e: string): CallDuration {
-    const [h, m, s] = ("0:0:" + e.split(" ").Last()!)
+    const [h, m, s] = ("0:0:" + e.split(" ")
+        .Last()!)
         .split(":")
         .Last(3)
         .Map(e => e.ToInt());
@@ -204,7 +205,9 @@ function CheckDocument(text: string): boolean {
 }
 
 function ParseText(text: string): [number, number, { [k: string]: number }, number, number] {
-    const count = text.split(" ").length;
+    const count = text.split(" ")
+        .Where(e => !e.IsEmpty() && !em.isEmoji(e))
+        .length;
     const char = text.Remove(" ").length;
     const emojis: { [k: string]: number } = {};
     const eCount = (em.extractEmoji(text) as string[]);

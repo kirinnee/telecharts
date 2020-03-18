@@ -147,6 +147,7 @@
                         drawTicks: false,
                         drawOnChartArea: i == 0,
                     },
+                    stacked: true,
                     id: e,
                     display: true,
                     position: i % 2 == 0 ? 'left' : 'right',
@@ -168,6 +169,7 @@
                     legend: {
                         display: true
                     },
+                    maintainAspectRatio: false,
                     responsive: true,
                     tooltips: {
                         mode: 'index',
