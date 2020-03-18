@@ -72,9 +72,9 @@
 
                                :y-axis="['a','b']"
                                :line-style="{
-                               message: {label: 'Number of Messages', yAxis: 'a',
+                               message: {label: '# of Messages', yAxis: 'a',
                                color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               averageWord: {label: 'Average Word Per Message', yAxis:'b',
+                               averageWord: {label: 'Avg Word / Message', yAxis:'b',
                                 color: '#36a2eb', areaColor: '#36a2eb30', fill: true},
                            }"
 
@@ -92,9 +92,9 @@
 
                                :y-axis="['a','b']"
                                :line-style="{
-                               message: {label: 'Number of Messages', yAxis: 'a',
+                               message: {label: '# of Messages', yAxis: 'a',
                                color: '#7ad0d0', areaColor: '#7ad0d030', fill: true},
-                               averageWord: {label: 'Average Word Per Message', yAxis: 'b',
+                               averageWord: {label: 'Avg Word / Message', yAxis: 'b',
                                color: '#ffa74f', areaColor: '#ffa74f30', fill: true},
                            }"
 
@@ -113,9 +113,9 @@
 
                                :y-axis="['a','b']"
                                :line-style="{
-                               emoji: {label: 'Number of Emoji', yAxis: 'a',
+                               emoji: {label: '# of Emoji', yAxis: 'a',
                                color: '#fed062', areaColor: '#fed06230', fill: false, straight: true},
-                               heart: {label: 'Number of Hearts',yAxis: 'b',
+                               heart: {label: '# of Hearts',yAxis: 'b',
                                color: '#ba97ff', areaColor: '#ba97ff30', fill: false, straight: true},
                            }"
 
@@ -167,9 +167,9 @@
 
                             :y-axis="['a','b']"
                             :line-style="{
-                               message: {label: 'Number of Messages', yAxis: 'a',
+                               message: {label: '# of Messages', yAxis: 'a',
                                color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               averageWord: {label: 'Average Word Per Message', yAxis: 'b',
+                               averageWord: {label: 'Avg Word / Message', yAxis: 'b',
                                color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
                             }"
 
@@ -267,7 +267,7 @@
 
                                 :y-axis="['a','b', 'c','d']"
                                 :line-style="{
-                               averageWord: {label: 'Avg Word/Message', yAxis: 'b',
+                               averageWord: {label: 'Avg Word / Message', yAxis: 'b',
                                 color: '#7ad0d0', areaColor: '#7ad0d030', fill: false, pointStyle: 'star'},
                                emoji: {label: '# of Emoji', yAxis: 'd',
                                 color: '#fed062', areaColor: '#fed06290', fill: false},
