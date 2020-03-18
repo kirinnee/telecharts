@@ -254,19 +254,20 @@
                                 :width="1000"
                         />
                     </div>
-                    <div class="r">
-                        <LineGraph
-                                ref="line6" title="Text per Month"
-                                :data="textGraph.stats.months"
-                                :keys="['message','averageWord', 'heart','emoji']"
+                    <div class="c">
+                        <div class="r" style="width: 987px">
+                            <LineGraph
+                                    ref="line6" title="Text per Month"
+                                    :data="textGraph.stats.months"
+                                    :keys="['message','averageWord', 'emoji','heart']"
 
-                                :bar="true"
-                                :x-axis-all="false"
+                                    :bar="true"
+                                    :x-axis-all="false"
 
-                                :x-axis="MonthRange"
+                                    :x-axis="MonthRange"
 
-                                :y-axis="['a','b', 'c','d']"
-                                :line-style="{
+                                    :y-axis="['a','b', 'c','d']"
+                                    :line-style="{
                                averageWord: {label: 'Avg Word / Message', yAxis: 'b',
                                 color: '#7ad0d0', areaColor: '#7ad0d030', fill: false, pointStyle: 'star'},
                                emoji: {label: '# of Emoji', yAxis: 'd',
@@ -277,11 +278,59 @@
                                 color: '#475f7b', areaColor: '#475f7b30', fill: true},
                             }"
 
-                                :height="500"
-                                :width="600"
-                        />
-                        <div class="c">
-
+                                    :height="440"
+                                    :width="550"
+                            />
+                            <div class="c">
+                                <MultiStats
+                                        title="Average Hearts"
+                                        :w="425" :h="140"
+                                        :label-f-s="12"
+                                        :value-f-s="25"
+                                        :data="[
+                                        ['Per Month', totalText.stats.averageHeartPerMonth,'#5a8dee'],
+                                        ['Per Day', totalText.stats.averageHeartPerDay, '#00cfdd'],
+                                        ['Per Message', totalText.stats.averageHeartPerMessage,'#3adb8b'],
+                                    ]"
+                                />
+                                <MultiStats
+                                        title="Average Words"
+                                        :w="425" :h="140"
+                                        :label-f-s="12"
+                                        :value-f-s="25"
+                                        :data="[
+                                        ['Per Month', totalText.stats.averageWordPerMonth,'#ff5b5c'],
+                                        ['Per Day', totalText.stats.averageWordPerDay, '#fdac41'],
+                                        ['Per Message', totalText.stats.averageWordPerMessage,'#475f7b'],
+                                    ]"
+                                />
+                                <MultiStats
+                                        title="Average Emojis"
+                                        :w="425" :h="140"
+                                        :label-f-s="12"
+                                        :value-f-s="25"
+                                        :data="[
+                                        ['Per Month', totalText.stats.averageEmojiPerMonth,'#9771e3'],
+                                        ['Per Day', totalText.stats.averageEmojiPerDay, '#22d676'],
+                                        ['Per Message', totalText.stats.averageEmojiPerMessage,'#ff8426'],
+                                    ]"
+                                />
+                            </div>
+                        </div>
+                        <div class="r">
+                            <NumberStats title="Minutes Called" :value="callNumbers.stats.totalDuration"
+                                         w="181px"
+                                         h="100px"
+                                         :fs="24"/>
+                            <NumberStats title="Longest Call"
+                                         :text-val="callNumbers.stats.longestCallText"
+                                         w="181px" h="100px"
+                                         :fs="24"/>
+                            <NumberStats title="Shortest Call"
+                                         :text-val="callNumbers.stats.shortestCallText"
+                                         w="181px"
+                                         h="100px"
+                                         :fs="24"/>
                         </div>
                     </div>
                 </div>
@@ -375,6 +424,7 @@
     import MessageShow from "./MessageShow.vue";
     import HighScores from "./HighScores.vue";
     import {TimeScaleMediaStatistic} from "../../../classLibrary/TimeScaleMediaStatistic";
+    import MultiStats from "./MultiStats.vue";
 
 
     enum Page {
@@ -386,7 +436,7 @@
 
 
     @Component({
-        components: {HighScores, MessageShow, EmojiChart, LineGraph, NumberStats, PolarArea, PieChart}
+        components: {MultiStats, HighScores, MessageShow, EmojiChart, LineGraph, NumberStats, PolarArea, PieChart}
     })
 
     export default class UploadLogs extends Vue {
