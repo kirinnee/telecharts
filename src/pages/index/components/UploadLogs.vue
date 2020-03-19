@@ -1,3 +1,4 @@
+import {EaseStrength} from "@kirinnee/kease";
 <template>
     <div class="holder">
         <div v-show="!upload&&!loaded" class="holder">
@@ -53,299 +54,302 @@
                 </div>
             </div>
             <div class="charts">
-                <div class="row">
-                    <div class="c">
-                        <NumberStats title="Months" :value="months" w="340px" h="215px" :fs="70"/>
-                        <NumberStats title="Days" :value="days" w="340px" h="215px" :fs="70"/>
-                    </div>
-                    <PieChart class="conversation" ref="pie1" :width="670" :height="450"
-                              title="Conversation Breakdown"
-                              :labels="['Text', 'Photo', 'Audio', 'Document', 'Videos', 'Sticker']"
-                              :keys="['text','photo','audio','document','video', 'sticker']"
-                              :colors="['#ff6384','#36a2eb','#ffce56','#4bc0c0','#9966ff','#ff9f40']"
-                              :data="total"
-                              total="Messages"/>
-                    <PolarArea class="media" ref="pie2" :width="670" :height="450"
-                               title="Media Breakdown"
-                               :labels="['Photo',  'Document','Audio', 'Animated Stickers', 'Normal Stickers' , 'Videos' ]"
-                               :keys="['photo','document','audio','animatedSticker', 'nonAnimatedSticker', 'video' ]"
-                               :colors="['#ffce56','#4bc0c0','#9966ff','#ff9f40','#ff6384','#36a2eb']"
-                               :data="total"/>
-                    <div class="c">
-                        <NumberStats title="Total Words Sent" :value="text.stats.totalWords" w="280px" h="140px"
-                                     :fs="40"/>
-                        <NumberStats title="Total Emojis Sent" :value="text.stats.totalEmoji" w="280px" h="140px"
-                                     :fs="40"/>
-                        <NumberStats title="Total Hearts Sent" :value="text.stats.totalHeart" w="280px" h="140px"
-                                     :fs="40"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <LineGraph ref="line1" title="Text per Day"
-                               :data="textGraph.stats.days"
-                               :keys="['message','averageWord']"
-
-                               :bar="false"
-
-                               :x-axis="DayRange"
-
-                               :y-axis="['a','b']"
-                               :line-style="{
-                               message: {label: '# of Messages', yAxis: 'a',
-                               color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               averageWord: {label: 'Avg Word / Message', yAxis:'b',
-                                color: '#36a2eb', areaColor: '#36a2eb30', fill: true},
-                           }"
-
-                               :height="370"
-                               :width="660"
-                    />
-                    <LineGraph ref="line2" title="Daily Text Statistics"
-                               :data="textGraph.stats.dayOfWeek"
-                               :keys="['message','averageWord']"
-
-                               :bar="true"
-
-
-                               :x-axis="['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sunday']"
-
-                               :y-axis="['a','b']"
-                               :line-style="{
-                               message: {label: '# of Messages', yAxis: 'a',
-                               color: '#7ad0d0', areaColor: '#7ad0d030', fill: true},
-                               averageWord: {label: 'Avg Word / Message', yAxis: 'b',
-                               color: '#ffa74f', areaColor: '#ffa74f30', fill: true},
-                           }"
-
-                               :height="370"
-                               :width="660"
-                    />
-                    <LineGraph ref="line3" title="Hearts and Emoji Per Day"
-
-                               :bar="false"
-
-                               :data="textGraph.stats.days"
-                               :keys="['emoji','heart']"
-
-                               :x-axis="DayRange"
-
-
-                               :y-axis="['a','b']"
-                               :line-style="{
-                               emoji: {label: '# of Emoji', yAxis: 'a',
-                               color: '#fed062', areaColor: '#fed06230', fill: false, straight: true},
-                               heart: {label: '# of Hearts',yAxis: 'b',
-                               color: '#ba97ff', areaColor: '#ba97ff30', fill: false, straight: true},
-                           }"
-
-                               :height="370"
-                               :width="660"
-                    />
-                </div>
-                <div class="row">
-                    <div class="c">
-                        <div class="r b-margin">
-                            <NumberStats title="Minutes Called" :value="callNumbers.stats.totalDuration"
-                                         w="181px"
-                                         h="100px"
-                                         :fs="24"/>
-                            <NumberStats title="Longest Call"
-                                         :text-val="callNumbers.stats.longestCallText"
-                                         w="181px" h="100px"
-                                         :fs="24"/>
-                            <NumberStats title="Shortest Call"
-                                         :text-val="callNumbers.stats.shortestCallText"
-                                         w="181px"
-                                         h="100px"
-                                         :fs="24"/>
+                <div ref='left' class="chart-h">
+                    <div class="row">
+                        <div class="c">
+                            <NumberStats title="Months" :value="months" w="340px" h="215px" :fs="70"/>
+                            <NumberStats title="Days" :value="days" w="340px" h="215px" :fs="70"/>
                         </div>
-                        <div>
-                            <PieChart ref="pie3" :width="570" :height="350"
-                                      title="Call Breakdown"
-                                      :labels="['Calls', 'Missed', 'Cancelled']"
-                                      :keys="['calls','missed', 'cancelled']"
-                                      :pie="true"
-                                      :colors="['#36a2eb','#ffce56','#9966ff']"
-                                      :data="callNumbers"
-                                      total="Calls"/>
+                        <PieChart class="conversation" ref="pie1" :width="670" :height="450"
+                                  title="Conversation Breakdown"
+                                  :labels="['Text', 'Photo', 'Audio', 'Document', 'Videos', 'Sticker']"
+                                  :keys="['text','photo','audio','document','video', 'sticker']"
+                                  :colors="['#ff6384','#36a2eb','#ffce56','#4bc0c0','#9966ff','#ff9f40']"
+                                  :data="total"
+                                  total="Messages"/>
+                        <PolarArea class="media" ref="pie2" :width="670" :height="450"
+                                   title="Media Breakdown"
+                                   :labels="['Photo',  'Document','Audio', 'Animated Stickers', 'Normal Stickers' , 'Videos' ]"
+                                   :keys="['photo','document','audio','animatedSticker', 'nonAnimatedSticker', 'video' ]"
+                                   :colors="['#ffce56','#4bc0c0','#9966ff','#ff9f40','#ff6384','#36a2eb']"
+                                   :data="total"/>
+                        <div class="c">
+                            <NumberStats title="Total Words Sent" :value="text.stats.totalWords" w="280px" h="140px"
+                                         :fs="40"/>
+                            <NumberStats title="Total Emojis Sent" :value="text.stats.totalEmoji" w="280px" h="140px"
+                                         :fs="40"/>
+                            <NumberStats title="Total Hearts Sent" :value="text.stats.totalHeart" w="280px" h="140px"
+                                         :fs="40"/>
                         </div>
                     </div>
-                    <LineGraph
-                            ref="line4" title="Text on Different hours of the day"
-                            :data="textGraph.stats.hours"
-                            :keys="['message','averageWord']"
+                    <div class="row">
+                        <LineGraph ref="line1" title="Text per Day"
+                                   :data="textGraph.stats.days"
+                                   :keys="['message','averageWord']"
 
-                            :bar="true"
-                            :x-axis-all="true"
+                                   :bar="false"
 
-                            :x-axis="['0000 - 0059', '0100 - 0159', '0200 - 0259', '0300 - 0359', '0400 - 0459', '0500 - 0559', '0600 - 0659',
-                            '0700 - 0759', '0800 - 0859', '0900 - 0959', '1000 - 1059', '1100 - 1159', '1200 - 1259', '1300 - 1359',
-                                                        '1400 - 1459', '1500 - 1559', '1600 - 1659', '1700 - 1759', '1800 - 1859', '1900 - 1959', '2000 - 2059'
-                                                        , '2100 - 2159', '2200 - 2259', '2300 - 2359'
-                            ]"
+                                   :x-axis="DayRange"
 
-                            :y-axis="['a','b']"
-                            :line-style="{
-                               message: {label: '# of Messages', yAxis: 'a',
-                               color: '#ff6384', areaColor: '#ff638430', fill: true},
-                               averageWord: {label: 'Avg Word / Message', yAxis: 'b',
-                               color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
-                            }"
+                                   :y-axis="['a','b']"
+                                   :line-style="{
+                                   message: {label: '# of Messages', yAxis: 'a',
+                                   color: '#ff6384', areaColor: '#ff638430', fill: true},
+                                   averageWord: {label: 'Avg Word / Message', yAxis:'b',
+                                    color: '#36a2eb', areaColor: '#36a2eb30', fill: true},
+                               }"
 
-                            :height="465"
-                            :width="900"
-                    />
-                    <EmojiChart
-                            :width="500" :height="465"
-                            title="Most Used Emojis"
-                            :emoji="emoji"
-                    />
-                </div>
-                <div class="row">
-                    <div class="c">
-                        <div class="r b-margin">
-                            <HighScores
-                                    title="Highest Word Count"
-                                    value="words"
-                                    :message="text.stats.highestWordCount"
-                                    units="words"
+                                   :height="370"
+                                   :width="660"
+                        />
+                        <LineGraph ref="line2" title="Daily Text Statistics"
+                                   :data="textGraph.stats.dayOfWeek"
+                                   :keys="['message','averageWord']"
 
-                                    w="240px"
-                                    h="170px"
-                                    :fs="34"
-                            />
-                            <HighScores
-                                    title="Highest Character Count"
-                                    value="characters"
-                                    :message="text.stats.highestCharacterCount"
-                                    units="Characters"
+                                   :bar="true"
 
-                                    w="240px"
-                                    h="170px"
-                                    :fs="34"
-                            />
-                            <HighScores
-                                    title="Highest Emoji Count"
-                                    value="emojiCount"
-                                    :message="text.stats.highestEmojiCount"
-                                    units="Emojis"
 
-                                    w="240px"
-                                    h="170px"
-                                    :fs="34"
-                            />
-                            <HighScores
-                                    title="Highest Heart Count"
-                                    value="heartCount"
-                                    :message="text.stats.highestHeartMessage"
-                                    units="Hearts"
+                                   :x-axis="['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sunday']"
 
-                                    w="240px"
-                                    h="170px"
-                                    :fs="34"
-                            />
-                        </div>
-                        <LineGraph
-                                ref="line5" title="Media Per Day"
-                                :data="media"
-                                :keys="['sticker','photo', 'document', 'video', 'audio']"
+                                   :y-axis="['a','b']"
+                                   :line-style="{
+                                   message: {label: '# of Messages', yAxis: 'a',
+                                   color: '#7ad0d0', areaColor: '#7ad0d030', fill: true},
+                                   averageWord: {label: 'Avg Word / Message', yAxis: 'b',
+                                   color: '#ffa74f', areaColor: '#ffa74f30', fill: true},
+                               }"
 
-                                :bar="false"
-                                :x-axis-all="false"
+                                   :height="370"
+                                   :width="660"
+                        />
+                        <LineGraph ref="line3" title="Hearts and Emoji Per Day"
 
-                                :x-axis="DayRange"
-                                :y-axis="['a','b','c','d','e']"
-                                :line-style="{
-                                    sticker: {label: '# of Stickers', yAxis: 'a',
-                                            color:'#36a2eb' , areaColor:'#36a2eb30' , fill: true,
-                                            dash: [5,5], pointStyle: 'star'},
-                                    photo: {label: '# of Photos', yAxis: 'b', straight: false,
-                                            color: '#ff6384', areaColor:  '#ff638430', fill: false},
-                                    document: {label: '# of Documents', yAxis: 'c', straight: false,
-                                            color: '#ffce56', areaColor: '#ffce5630', fill: false},
-                                    video: {label: '# of Videos', yAxis: 'd', straight: false,
-                                            color: '#4bc0c0', areaColor: '#4bc0c030', fill: false},
-                                    audio: {label: '# of Audios', yAxis: 'e', straight: false,
-                                            color: '#9966ff', areaColor: '#9966ff30', fill: false},
-                                }"
+                                   :bar="false"
 
-                                :height="560"
-                                :width="1000"
+                                   :data="textGraph.stats.days"
+                                   :keys="['emoji','heart']"
+
+                                   :x-axis="DayRange"
+
+
+                                   :y-axis="['a','b']"
+                                   :line-style="{
+                                   emoji: {label: '# of Emoji', yAxis: 'a',
+                                   color: '#fed062', areaColor: '#fed06230', fill: false, straight: true},
+                                   heart: {label: '# of Hearts',yAxis: 'b',
+                                   color: '#ba97ff', areaColor: '#ba97ff30', fill: false, straight: true},
+                               }"
+
+                                   :height="370"
+                                   :width="660"
                         />
                     </div>
-                    <div class="c">
-                        <div class="r" style="width: 987px">
-                            <LineGraph
-                                    ref="line6" title="Text per Month"
-                                    :data="textGraph.stats.months"
-                                    :keys="['message','averageWord', 'emoji','heart']"
-
-                                    :bar="true"
-                                    :x-axis-all="false"
-
-                                    :x-axis="MonthRange"
-
-                                    :y-axis="['a','b', 'c','d']"
-                                    :line-style="{
-                               averageWord: {label: 'Avg Word / Message', yAxis: 'b',
-                                color: '#7ad0d0', areaColor: '#7ad0d030', fill: false, pointStyle: 'star'},
-                               emoji: {label: '# of Emoji', yAxis: 'd',
-                                color: '#fed062', areaColor: '#fed06290', fill: false},
-                               heart: {label: '# of Hearts', yAxis: 'c',
-                                color: '#ba97ff', areaColor: '#ba97ff90', fill: true},
-                               message: {label: '# of Messages', yAxis: 'a', type: 'line',
-                                color: '#475f7b', areaColor: '#475f7b30', fill: true},
-                            }"
-
-                                    :height="440"
-                                    :width="550"
-                            />
-                            <div class="c">
-                                <MultiStats
-                                        title="Average Hearts"
-                                        :w="425" :h="140"
-                                        :label-f-s="12"
-                                        :value-f-s="25"
-                                        :data="[
-                                        ['Per Month', text.stats.averageHeartPerMonth,'#5a8dee'],
-                                        ['Per Day', text.stats.averageHeartPerDay, '#00cfdd'],
-                                        ['Per Message', text.stats.averageHeartPerMessage,'#3adb8b'],
-                                    ]"
-                                />
-                                <MultiStats
-                                        title="Average Words"
-                                        :w="425" :h="140"
-                                        :label-f-s="12"
-                                        :value-f-s="25"
-                                        :data="[
-                                        ['Per Month', text.stats.averageWordPerMonth,'#ff5b5c'],
-                                        ['Per Day', text.stats.averageWordPerDay, '#fdac41'],
-                                        ['Per Message', text.stats.averageWordPerMessage,'#475f7b'],
-                                    ]"
-                                />
-                                <MultiStats
-                                        title="Average Emojis"
-                                        :w="425" :h="140"
-                                        :label-f-s="12"
-                                        :value-f-s="25"
-                                        :data="[
-                                        ['Per Month', text.stats.averageEmojiPerMonth,'#9771e3'],
-                                        ['Per Day', text.stats.averageEmojiPerDay, '#22d676'],
-                                        ['Per Message', text.stats.averageEmojiPerMessage,'#ff8426'],
-                                    ]"
-                                />
+                    <div class="row">
+                        <div class="c">
+                            <div class="r b-margin">
+                                <NumberStats title="Minutes Called" :value="callNumbers.stats.totalDuration"
+                                             w="181px"
+                                             h="100px"
+                                             :fs="24"/>
+                                <NumberStats title="Longest Call"
+                                             :text-val="callNumbers.stats.longestCallText"
+                                             w="181px" h="100px"
+                                             :fs="24"/>
+                                <NumberStats title="Shortest Call"
+                                             :text-val="callNumbers.stats.shortestCallText"
+                                             w="181px"
+                                             h="100px"
+                                             :fs="24"/>
+                            </div>
+                            <div>
+                                <PieChart ref="pie3" :width="570" :height="350"
+                                          title="Call Breakdown"
+                                          :labels="['Calls', 'Missed', 'Cancelled']"
+                                          :keys="['calls','missed', 'cancelled']"
+                                          :pie="true"
+                                          :colors="['#36a2eb','#ffce56','#9966ff']"
+                                          :data="callNumbers"
+                                          total="Calls"/>
                             </div>
                         </div>
-                        <div class="r" :style="{flexWrap: 'wrap', width: '987px' }">
-                            <NumberStats v-for="(v,i) in Stats" :key="i" :style="{marginTop: '12px' }"
-                                         :title="v.label" :text-val="v.value"
-                                         w="235px"
-                                         h="140px"
-                                         :fs="30"/>
+                        <LineGraph
+                                ref="line4" title="Text on Different hours of the day"
+                                :data="textGraph.stats.hours"
+                                :keys="['message','averageWord']"
 
+                                :bar="true"
+                                :x-axis-all="true"
+
+                                :x-axis="['0000 - 0059', '0100 - 0159', '0200 - 0259', '0300 - 0359', '0400 - 0459', '0500 - 0559', '0600 - 0659',
+                                '0700 - 0759', '0800 - 0859', '0900 - 0959', '1000 - 1059', '1100 - 1159', '1200 - 1259', '1300 - 1359',
+                                                            '1400 - 1459', '1500 - 1559', '1600 - 1659', '1700 - 1759', '1800 - 1859', '1900 - 1959', '2000 - 2059'
+                                                            , '2100 - 2159', '2200 - 2259', '2300 - 2359'
+                                ]"
+
+                                :y-axis="['a','b']"
+                                :line-style="{
+                                   message: {label: '# of Messages', yAxis: 'a',
+                                   color: '#ff6384', areaColor: '#ff638430', fill: true},
+                                   averageWord: {label: 'Avg Word / Message', yAxis: 'b',
+                                   color: '#36a2eb', areaColor: '#36a2eb30', fill: false, straight: true, type: 'line', pointStyle: 'star'}
+                                }"
+
+                                :height="465"
+                                :width="900"
+                        />
+                        <EmojiChart
+                                :width="500" :height="465"
+                                title="Most Used Emojis"
+                                :emoji="emoji"
+                        />
+                    </div>
+                    <div class="row">
+                        <div class="c">
+                            <div class="r b-margin">
+                                <HighScores
+                                        title="Highest Word Count"
+                                        value="words"
+                                        :message="text.stats.highestWordCount"
+                                        units="words"
+
+                                        w="240px"
+                                        h="170px"
+                                        :fs="34"
+                                />
+                                <HighScores
+                                        title="Highest Character Count"
+                                        value="characters"
+                                        :message="text.stats.highestCharacterCount"
+                                        units="Characters"
+
+                                        w="240px"
+                                        h="170px"
+                                        :fs="34"
+                                />
+                                <HighScores
+                                        title="Highest Emoji Count"
+                                        value="emojiCount"
+                                        :message="text.stats.highestEmojiCount"
+                                        units="Emojis"
+
+                                        w="240px"
+                                        h="170px"
+                                        :fs="34"
+                                />
+                                <HighScores
+                                        title="Highest Heart Count"
+                                        value="heartCount"
+                                        :message="text.stats.highestHeartMessage"
+                                        units="Hearts"
+
+                                        w="240px"
+                                        h="170px"
+                                        :fs="34"
+                                />
+                            </div>
+                            <LineGraph
+                                    ref="line5" title="Media Per Day"
+                                    :data="media"
+                                    :keys="['sticker','photo', 'document', 'video', 'audio']"
+
+                                    :bar="false"
+                                    :x-axis-all="false"
+
+                                    :x-axis="DayRange"
+                                    :y-axis="['a','b','c','d','e']"
+                                    :line-style="{
+                                        sticker: {label: '# of Stickers', yAxis: 'a',
+                                                color:'#36a2eb' , areaColor:'#36a2eb30' , fill: true,
+                                                dash: [5,5], pointStyle: 'star'},
+                                        photo: {label: '# of Photos', yAxis: 'b', straight: false,
+                                                color: '#ff6384', areaColor:  '#ff638430', fill: false},
+                                        document: {label: '# of Documents', yAxis: 'c', straight: false,
+                                                color: '#ffce56', areaColor: '#ffce5630', fill: false},
+                                        video: {label: '# of Videos', yAxis: 'd', straight: false,
+                                                color: '#4bc0c0', areaColor: '#4bc0c030', fill: false},
+                                        audio: {label: '# of Audios', yAxis: 'e', straight: false,
+                                                color: '#9966ff', areaColor: '#9966ff30', fill: false},
+                                    }"
+
+                                    :height="560"
+                                    :width="1000"
+                            />
+                        </div>
+                        <div class="c">
+                            <div class="r" style="width: 987px">
+                                <LineGraph
+                                        ref="line6" title="Text per Month"
+                                        :data="textGraph.stats.months"
+                                        :keys="['message','averageWord', 'emoji','heart']"
+
+                                        :bar="true"
+                                        :x-axis-all="false"
+
+                                        :x-axis="MonthRange"
+
+                                        :y-axis="['a','b', 'c','d']"
+                                        :line-style="{
+                                   averageWord: {label: 'Avg Word / Message', yAxis: 'b',
+                                    color: '#7ad0d0', areaColor: '#7ad0d030', fill: false, pointStyle: 'star'},
+                                   emoji: {label: '# of Emoji', yAxis: 'd',
+                                    color: '#fed062', areaColor: '#fed06290', fill: false},
+                                   heart: {label: '# of Hearts', yAxis: 'c',
+                                    color: '#ba97ff', areaColor: '#ba97ff90', fill: true},
+                                   message: {label: '# of Messages', yAxis: 'a', type: 'line',
+                                    color: '#475f7b', areaColor: '#475f7b30', fill: true},
+                                }"
+
+                                        :height="440"
+                                        :width="550"
+                                />
+                                <div class="c">
+                                    <MultiStats
+                                            title="Average Hearts"
+                                            :w="425" :h="140"
+                                            :label-f-s="12"
+                                            :value-f-s="25"
+                                            :data="[
+                                            ['Per Month', text.stats.averageHeartPerMonth,'#5a8dee'],
+                                            ['Per Day', text.stats.averageHeartPerDay, '#00cfdd'],
+                                            ['Per Message', text.stats.averageHeartPerMessage,'#3adb8b'],
+                                        ]"
+                                    />
+                                    <MultiStats
+                                            title="Average Words"
+                                            :w="425" :h="140"
+                                            :label-f-s="12"
+                                            :value-f-s="25"
+                                            :data="[
+                                            ['Per Month', text.stats.averageWordPerMonth,'#ff5b5c'],
+                                            ['Per Day', text.stats.averageWordPerDay, '#fdac41'],
+                                            ['Per Message', text.stats.averageWordPerMessage,'#475f7b'],
+                                        ]"
+                                    />
+                                    <MultiStats
+                                            title="Average Emojis"
+                                            :w="425" :h="140"
+                                            :label-f-s="12"
+                                            :value-f-s="25"
+                                            :data="[
+                                            ['Per Month', text.stats.averageEmojiPerMonth,'#9771e3'],
+                                            ['Per Day', text.stats.averageEmojiPerDay, '#22d676'],
+                                            ['Per Message', text.stats.averageEmojiPerMessage,'#ff8426'],
+                                        ]"
+                                    />
+                                </div>
+                            </div>
+                            <div class="r" :style="{flexWrap: 'wrap', width: '987px' }">
+                                <NumberStats v-for="(v,i) in Stats" :key="i" :style="{marginTop: '12px' }"
+                                             :title="v.label" :text-val="v.value"
+                                             w="235px"
+                                             h="140px"
+                                             :fs="30"/>
+
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div ref='right' class="compare chart-h" style="position:absolute"> NEW CHART</div>
             </div>
         </div>
     </div>
@@ -424,9 +428,23 @@
             display: flex;
             flex-direction: column;
 
+
+            .chart-h {
+                position: relative;
+                transition: left 0.5s;
+            }
+
             .charts {
+                overflow-x: hidden;
+                position: relative;
                 height: 100%;
                 overflow-y: auto;
+            }
+
+            .compare {
+                position: absolute;
+                left: 100%;
+                top: 0;
             }
         }
 
@@ -478,6 +496,8 @@
     import {TimeScaleMediaStatistic} from "../../../classLibrary/TimeScaleMediaStatistic";
     import MultiStats from "./MultiStats.vue";
     import {AudioStatistics} from "../../../classLibrary/AudioStatistics";
+    import {EaseStrength, kEasing} from "@kirinnee/kease";
+    import {eases} from "../init";
 
 
     enum Page {
@@ -524,27 +544,73 @@
         days: number = 0;
         months: number = 0;
 
+        ease: kEasing = eases.Swing(EaseStrength.Linear);
+
+        get IsLeft(): boolean {
+            return this.page == Page.user1 || this.page == Page.user2 || this.page == Page.all;
+        }
+
+        get IsRight(): boolean {
+            return this.page == Page.compare;
+        }
+
+        get Left(): Element {
+            return this.$refs["left"] as Element;
+        }
+
+        get Right(): Element {
+            return this.$refs["right"] as Element;
+        }
+
+        MoveLeft() {
+            this.Left.Style("left", "-100%");
+            this.Right.Style("left", "0%");
+
+        }
+
+        MoveRight() {
+            this.Left.Style("left", "0%");
+            this.Right.Style("left", "100%");
+
+        }
+
         ToPage1() {
+            if (this.IsRight) {
+                this.MoveRight();
+            }
             this.page = Page.all;
             this.ReadjustData(this.currentStart, this.currentEnd);
+
         }
 
 
-        ToPage2() {
+        async ToPage2() {
+            if (this.IsRight) {
+                this.MoveRight();
+            }
             this.page = Page.user1;
             this.ReadjustData(this.currentStart, this.currentEnd);
+
         }
 
 
-        ToPage3() {
+        async ToPage3() {
+            if (this.IsRight) {
+                this.MoveRight();
+            }
             this.page = Page.user2;
             this.ReadjustData(this.currentStart, this.currentEnd);
+
         }
 
 
-        ToPage4() {
+        async ToPage4() {
+            if (this.IsLeft) {
+                this.MoveLeft();
+            }
             this.page = Page.compare;
             this.ReadjustData(this.currentStart, this.currentEnd);
+
         }
 
         get All(): string {
@@ -638,15 +704,16 @@
                     all = BreakdownMessage(u2);
 
                 }
-
             }
-            this.text.Set(all.text, months, days);
-            this.total.Set(all);
-            this.textGraph.Set(all.text, start, days, months);
-            this.callNumbers.Set(all.call, all.missedCall, all.cancelledCall, months, days);
-            this.emoji.Set(all.text);
-            this.media.Set(all.photo, all.audio, all.video, all.document, all.animatedSticker.Add(all.nonAnimatedSticker), start, days, months);
-            this.audio.Set(all.audio, months, days);
+            if (this.page != Page.compare) {
+                this.text.Set(all.text, months, days);
+                this.total.Set(all);
+                this.textGraph.Set(all.text, start, days, months);
+                this.callNumbers.Set(all.call, all.missedCall, all.cancelledCall, months, days);
+                this.emoji.Set(all.text);
+                this.media.Set(all.photo, all.audio, all.video, all.document, all.animatedSticker.Add(all.nonAnimatedSticker), start, days, months);
+                this.audio.Set(all.audio, months, days);
+            }
 
             Vue.nextTick().then(() => {
                 this.ReRenderAll();
@@ -655,10 +722,13 @@
         }
 
         ReRenderAll() {
-            ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4", "line5", "line6"]
-                .Each(e => {
-                    (this.$refs[e] as any).Rerender();
-                });
+            if (this.Left) {
+                ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4", "line5", "line6"]
+                    .Each(e => {
+                        (this.$refs[e] as any).Rerender();
+                    });
+            }
+
         }
 
 
