@@ -1,4 +1,3 @@
-import {EaseStrength} from "@kirinnee/kease";
 <template>
     <div class="holder">
         <div v-show="!upload&&!loaded" class="holder">
@@ -54,7 +53,7 @@ import {EaseStrength} from "@kirinnee/kease";
                 </div>
             </div>
             <div class="charts">
-                <div ref='left' class="chart-h">
+                <div ref='left' :style="LeftStyle" class="chart-h">
                     <div class="row">
                         <div class="c">
                             <NumberStats title="Months" :value="months" w="340px" h="215px" :fs="70"/>
@@ -109,7 +108,7 @@ import {EaseStrength} from "@kirinnee/kease";
                                    :bar="true"
 
 
-                                   :x-axis="['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Sunday']"
+                                   :x-axis="WeekDays"
 
                                    :y-axis="['a','b']"
                                    :line-style="{
@@ -180,11 +179,7 @@ import {EaseStrength} from "@kirinnee/kease";
                                 :bar="true"
                                 :x-axis-all="true"
 
-                                :x-axis="['0000 - 0059', '0100 - 0159', '0200 - 0259', '0300 - 0359', '0400 - 0459', '0500 - 0559', '0600 - 0659',
-                                '0700 - 0759', '0800 - 0859', '0900 - 0959', '1000 - 1059', '1100 - 1159', '1200 - 1259', '1300 - 1359',
-                                                            '1400 - 1459', '1500 - 1559', '1600 - 1659', '1700 - 1759', '1800 - 1859', '1900 - 1959', '2000 - 2059'
-                                                            , '2100 - 2159', '2200 - 2259', '2300 - 2359'
-                                ]"
+                                :x-axis="DayHours"
 
                                 :y-axis="['a','b']"
                                 :line-style="{
@@ -349,13 +344,62 @@ import {EaseStrength} from "@kirinnee/kease";
                         </div>
                     </div>
                 </div>
-                <div ref='right' class="compare chart-h" style="position:absolute"> NEW CHART</div>
+                <div ref='right' :style="RightStyle" class="compare chart-h" style="position:absolute">
+                    <div class="wrap">
+                        <ComparisonHeader
+                                :style="{marginTop: '12px'} "
+                                :w="450" :h="130"
+                                :user1="messageData.user1.name" :handle1="messageData.user1.handle"
+                                :user2="messageData.user2.name" :handle2="messageData.user2.handle"
+                        />
+                        <Comparison v-for="(v,i) in Comparison" :key="i"
+                                    :style="{marginTop: '12px'} "
+                                    :title="v.title"
+                                    :v1="v.v1"
+                                    :v2="v.v2"
+                                    :display1="v.display1"
+                                    :display2="v.display2"
+                                    :w="450" :h="130"/>
+                    </div>
+                    <div class="wrap" :style="{width: '76%' }">
+                        <LineGraph v-for="(k,i) in CompareGraphs" :key="i"
+
+                                   :style="{marginTop: '12px'}"
+
+                                   :ref="k.ref" :title="k.title"
+                                   :data="k.data"
+                                   :keys="CompareKeys"
+
+                                   :bar="k.bar"
+                                   :x-axis="k.xAxis"
+                                   :x-axis-all="k.fullX"
+
+                                   :y-axis="['a']"
+                                   :line-style="CompareLineStyle"
+
+                                   :height="454"
+                                   :width="764"
+                        />
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </template>
 
 <style lang='scss' scoped>
+
+    .wrap {
+        position: relative;
+        width: 22.5%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-left: 12px;
+        margin-top: 12px;
+    }
+
     .nav-bar {
         display: flex;
         position: absolute;
@@ -435,6 +479,7 @@ import {EaseStrength} from "@kirinnee/kease";
             }
 
             .charts {
+                display: block;
                 overflow-x: hidden;
                 position: relative;
                 height: 100%;
@@ -443,6 +488,7 @@ import {EaseStrength} from "@kirinnee/kease";
 
             .compare {
                 position: absolute;
+                display: flex;
                 left: 100%;
                 top: 0;
             }
@@ -498,7 +544,8 @@ import {EaseStrength} from "@kirinnee/kease";
     import {AudioStatistics} from "../../../classLibrary/AudioStatistics";
     import {EaseStrength, kEasing} from "@kirinnee/kease";
     import {eases} from "../init";
-
+    import Comparison from "./Comparison.vue";
+    import ComparisonHeader from "./ComparisonHeader.vue";
 
     enum Page {
         all,
@@ -507,9 +554,12 @@ import {EaseStrength} from "@kirinnee/kease";
         compare,
     }
 
-
     @Component({
-        components: {MultiStats, HighScores, MessageShow, EmojiChart, LineGraph, NumberStats, PolarArea, PieChart}
+        components: {
+            ComparisonHeader,
+            Comparison,
+            MultiStats, HighScores, MessageShow, EmojiChart, LineGraph, NumberStats, PolarArea, PieChart
+        }
     })
 
     export default class UploadLogs extends Vue {
@@ -528,6 +578,13 @@ import {EaseStrength} from "@kirinnee/kease";
         emoji: EmojiDataSet = new EmojiDataSet();
         media: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
         audio: AudioStatistics = new AudioStatistics();
+        aTotal: MessageTypeStatistic = new MessageTypeStatistic();
+        aText: TextStatistic = new TextStatistic();
+        aTextGraph: TimeScaleTextStatistic = new TimeScaleTextStatistic();
+        aCallNumbers: CallStatistic = new CallStatistic();
+        aEmoji: EmojiDataSet = new EmojiDataSet();
+        aMedia: TimeScaleMediaStatistic = new TimeScaleMediaStatistic();
+        aAudio: AudioStatistics = new AudioStatistics();
 
         data: Date[] = [];
         start: number = new Date(2019, 1, 1).valueOf();
@@ -554,50 +611,60 @@ import {EaseStrength} from "@kirinnee/kease";
             return this.page == Page.compare;
         }
 
-        get Left(): Element {
-            return this.$refs["left"] as Element;
+        get LeftStyle(): object {
+            return {
+                left: this.IsLeft ? "0%" : "-100%",
+                // display: this.IsLeft ? "block" : "none",
+            };
         }
 
-        get Right(): Element {
-            return this.$refs["right"] as Element;
+        get RightStyle(): object {
+            return {
+                left: this.IsRight ? "0%" : "100%",
+                // display: this.IsRight ? "block" : "none",
+            };
         }
 
-        MoveLeft() {
-            this.Left.Style("left", "-100%");
-            this.Right.Style("left", "0%");
-
+        get CompareKeys(): string[] {
+            const u1 = this.messageData.user1;
+            const u2 = this.messageData.user2;
+            return [u1.handle, u2.handle];
         }
 
-        MoveRight() {
-            this.Left.Style("left", "0%");
-            this.Right.Style("left", "100%");
-
+        get CompareLineStyle(): object {
+            const x: any = {};
+            const u1 = this.messageData.user1;
+            const u2 = this.messageData.user2;
+            x[u1.handle] = {
+                label: u1.name,
+                yAxis: 'a',
+                color: '#36a2eb', areaColor: '#36a2eb30',
+                fill: true
+            };
+            x[u2.handle] = {
+                label: u2.name,
+                yAxis: 'a',
+                color: '#ff6384', areaColor: '#ff638430',
+                fill: true
+            };
+            return x;
         }
 
         ToPage1() {
-            if (this.IsRight) {
-                this.MoveRight();
-            }
             this.page = Page.all;
             this.ReadjustData(this.currentStart, this.currentEnd);
 
         }
 
 
-        async ToPage2() {
-            if (this.IsRight) {
-                this.MoveRight();
-            }
+        ToPage2() {
             this.page = Page.user1;
             this.ReadjustData(this.currentStart, this.currentEnd);
 
         }
 
 
-        async ToPage3() {
-            if (this.IsRight) {
-                this.MoveRight();
-            }
+        ToPage3() {
             this.page = Page.user2;
             this.ReadjustData(this.currentStart, this.currentEnd);
 
@@ -605,9 +672,6 @@ import {EaseStrength} from "@kirinnee/kease";
 
 
         async ToPage4() {
-            if (this.IsLeft) {
-                this.MoveLeft();
-            }
             this.page = Page.compare;
             this.ReadjustData(this.currentStart, this.currentEnd);
 
@@ -692,29 +756,51 @@ import {EaseStrength} from "@kirinnee/kease";
                 cancelledCall: []
             };
 
+            let alt: RawMessageData = {
+                all: [],
+                text: [],
+                photo: [],
+                audio: [],
+                document: [],
+                video: [],
+                animatedSticker: [],
+                nonAnimatedSticker: [],
+                call: [],
+                missedCall: [],
+                cancelledCall: []
+            };
+
             if (this.page == Page.all) {
                 all = BreakdownMessage(adjustedMessages);
 
             } else {
                 const [u1, u2] = SplitUser(adjustedMessages, this.messageData.user1.name);
-                if (this.page == Page.user1) {
-
+                if (this.page == Page.user1 || this.page == Page.compare) {
                     all = BreakdownMessage(u1);
+                    if (this.page == Page.compare) {
+                        alt = BreakdownMessage(u2);
+                    }
                 } else if (this.page == Page.user2) {
                     all = BreakdownMessage(u2);
-
                 }
-            }
-            if (this.page != Page.compare) {
-                this.text.Set(all.text, months, days);
-                this.total.Set(all);
-                this.textGraph.Set(all.text, start, days, months);
-                this.callNumbers.Set(all.call, all.missedCall, all.cancelledCall, months, days);
-                this.emoji.Set(all.text);
-                this.media.Set(all.photo, all.audio, all.video, all.document, all.animatedSticker.Add(all.nonAnimatedSticker), start, days, months);
-                this.audio.Set(all.audio, months, days);
-            }
 
+            }
+            this.text.Set(all.text, months, days);
+            this.total.Set(all);
+            this.textGraph.Set(all.text, start, days, months);
+            this.callNumbers.Set(all.call, all.missedCall, all.cancelledCall, months, days);
+            this.emoji.Set(all.text);
+            this.media.Set(all.photo, all.audio, all.video, all.document, all.animatedSticker.Add(all.nonAnimatedSticker), start, days, months);
+            this.audio.Set(all.audio, months, days);
+            if (this.page == Page.compare) {
+                this.aText.Set(alt.text, months, days);
+                this.aTotal.Set(alt);
+                this.aTextGraph.Set(alt.text, start, days, months);
+                this.aCallNumbers.Set(alt.call, alt.missedCall, alt.cancelledCall, months, days);
+                this.aEmoji.Set(alt.text);
+                this.aMedia.Set(alt.photo, alt.audio, alt.video, alt.document, alt.animatedSticker.Add(alt.nonAnimatedSticker), start, days, months);
+                this.aAudio.Set(alt.audio, months, days);
+            }
             Vue.nextTick().then(() => {
                 this.ReRenderAll();
             });
@@ -722,10 +808,16 @@ import {EaseStrength} from "@kirinnee/kease";
         }
 
         ReRenderAll() {
-            if (this.Left) {
+            if (this.IsLeft) {
                 ["pie1", "pie2", "pie3", "line1", "line2", "line3", "line4", "line5", "line6"]
                     .Each(e => {
                         (this.$refs[e] as any).Rerender();
+                    });
+            } else {
+                this.CompareGraphs.Map(e => e.ref)
+                    .Each(e => {
+                        console.log(this.$refs[e]);
+                        (this.$refs[e] as any)[0].Rerender();
                     });
             }
 
@@ -780,6 +872,179 @@ import {EaseStrength} from "@kirinnee/kease";
             ];
         }
 
+        get Comparison(): { title: string, v1: number, v2: number, display1?: string, display2?: string } [] {
+            return [
+                {title: 'Messages', v1: this.total.Total, v2: this.aTotal.Total},
+                {title: 'Texts Sent', v1: this.total.text, v2: this.aTotal.text},
+                {title: 'Photos Sent', v1: this.total.photo, v2: this.aTotal.photo},
+                {title: 'Audios Sent', v1: this.total.audio, v2: this.aTotal.audio},
+                {title: 'Documents Sent', v1: this.total.document, v2: this.aTotal.document},
+                {title: 'Videos Sent', v1: this.total.video, v2: this.aTotal.video},
+                {title: 'Stickers Sent', v1: this.total.Sticker, v2: this.aTotal.Sticker},
+
+                {title: 'Words Sent', v1: this.text.stats.totalWords, v2: this.aText.stats.totalWords},
+                {title: 'Emojis Sent', v1: this.text.stats.totalEmoji, v2: this.aText.stats.totalEmoji},
+                {title: 'Hearts Sent', v1: this.text.stats.totalHeart, v2: this.aText.stats.totalHeart},
+                {title: 'Characters Sent', v1: this.text.stats.totalCharacters, v2: this.aText.stats.totalCharacters},
+
+                {
+                    title: 'Highest Word Count',
+                    v1: this.text.stats.highestWordCount?.words!,
+                    v2: this.aText.stats.highestWordCount?.words!
+                },
+                {
+                    title: 'Highest Character Count',
+                    v1: this.text.stats.highestCharacterCount?.characters!,
+                    v2: this.aText.stats.highestCharacterCount?.characters!
+                },
+                {
+                    title: 'Highest Emoji Count',
+                    v1: this.text.stats.highestEmojiCount?.emojiCount!,
+                    v2: this.aText.stats.highestEmojiCount?.emojiCount!
+                },
+                {
+                    title: 'Highest Heart Count',
+                    v1: this.text.stats.highestHeartMessage?.heartCount!,
+                    v2: this.aText.stats.highestHeartMessage?.heartCount!
+                },
+
+                {
+                    title: 'Message / Month',
+                    v1: this.text.stats.averageMessagePerMonth,
+                    v2: this.aText.stats.averageMessagePerMonth
+                },
+                {
+                    title: 'Message / Day',
+                    v1: this.text.stats.averageMessagePerDay,
+                    v2: this.aText.stats.averageMessagePerDay
+                },
+
+                {
+                    title: 'Hearts / Month',
+                    v1: this.text.stats.averageHeartPerMonth,
+                    v2: this.aText.stats.averageHeartPerMonth
+                },
+                {
+                    title: 'Hearts / Day',
+                    v1: this.text.stats.averageHeartPerDay,
+                    v2: this.aText.stats.averageHeartPerDay
+                },
+                {
+                    title: 'Average Hearts / Message',
+                    v1: this.text.stats.averageHeartPerMessage,
+                    v2: this.aText.stats.averageHeartPerMessage
+                },
+                {
+                    title: 'Words / Month',
+                    v1: this.text.stats.averageWordPerMonth,
+                    v2: this.aText.stats.averageWordPerMonth
+                },
+                {title: 'Words / Day', v1: this.text.stats.averageWordPerDay, v2: this.aText.stats.averageWordPerDay},
+                {
+                    title: 'Average Words / Message',
+                    v1: this.text.stats.averageWordPerMessage,
+                    v2: this.aText.stats.averageWordPerMessage
+                },
+                {
+                    title: 'Emojis / Month',
+                    v1: this.text.stats.averageEmojiPerMonth,
+                    v2: this.aText.stats.averageEmojiPerMonth
+                },
+                {
+                    title: 'Emojis / Day',
+                    v1: this.text.stats.averageEmojiPerDay,
+                    v2: this.aText.stats.averageEmojiPerDay
+                },
+                {
+                    title: 'Average Emojis / Message',
+                    v1: this.text.stats.averageEmojiPerMessage,
+                    v2: this.aText.stats.averageEmojiPerMessage
+                },
+
+                {
+                    title: 'Total Audio Duration',
+                    v1: this.audio.duration,
+                    v2: this.aAudio.duration,
+                    display1: this.audio.totalDuration,
+                    display2: this.aAudio.totalDuration,
+                },
+                {
+                    title: 'Average Audio Duration',
+                    v1: this.audio.averageDuration,
+                    v2: this.aAudio.averageDuration,
+                    display1: this.audio.avgDuration,
+                    display2: this.aAudio.avgDuration,
+                },
+                {
+                    title: 'Audio Duration / Day',
+                    v1: this.audio.averageDurationPerDay,
+                    v2: this.aAudio.averageDurationPerDay,
+                    display1: this.audio.avgDurationPerDay,
+                    display2: this.aAudio.avgDurationPerDay,
+                },
+
+                {title: 'Calls', v1: this.callNumbers.stats.calls, v2: this.aCallNumbers.stats.calls},
+                {title: 'Missed Calls', v1: this.callNumbers.stats.missed, v2: this.aCallNumbers.stats.missed},
+                {title: 'Cancelled Calls', v1: this.callNumbers.stats.cancelled, v2: this.aCallNumbers.stats.cancelled},
+
+            ];
+        }
+
+
+        get WeekDays(): string[] {
+            return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        }
+
+        get DayHours(): string[] {
+            return ['0000 - 0059', '0100 - 0159', '0200 - 0259', '0300 - 0359', '0400 - 0459', '0500 - 0559', '0600 - 0659', '0700 - 0759', '0800 - 0859', '0900 - 0959', '1000 - 1059', '1100 - 1159', '1200 - 1259', '1300 - 1359', '1400 - 1459', '1500 - 1559', '1600 - 1659', '1700 - 1759', '1800 - 1859', '1900 - 1959', '2000 - 2059', '2100 - 2159', '2200 - 2259', '2300 - 2359'];
+        }
+
+        get CompareGraphs(): { ref: string, title: string, xAxis: string[], fullX: boolean, bar: boolean, data: { Updated: { [s: string]: number[] } } }[] {
+            const x: [string, string[], number[], number[], boolean, boolean][] = [
+                ['Messages / Day', this.DayRange, this.textGraph.stats.days.message, this.aTextGraph.stats.days.message, false, false],
+                ['Average Word / Message Each Day', this.DayRange, this.textGraph.stats.days.averageWord, this.aTextGraph.stats.days.averageWord, false, false],
+                ['Messages for each Day of the week', this.WeekDays, this.textGraph.stats.dayOfWeek.message, this.aTextGraph.stats.dayOfWeek.message, true, true],
+                ['Average Word / Message for each day of the week', this.WeekDays, this.textGraph.stats.dayOfWeek.averageWord, this.aTextGraph.stats.dayOfWeek.averageWord, true, true],
+                ['Messages for hours of the Day', this.DayHours, this.textGraph.stats.hours.message, this.aTextGraph.stats.hours.message, true, true],
+                ['Average Word / Message for hours of the Day', this.DayHours, this.textGraph.stats.hours.averageWord, this.aTextGraph.stats.hours.averageWord, true, true],
+                ['Messages / Month', this.MonthRange, this.textGraph.stats.months.message, this.aTextGraph.stats.months.message, true, true],
+                ['Average Word / Message Each Month', this.MonthRange, this.textGraph.stats.months.averageWord, this.aTextGraph.stats.months.averageWord, true, true],
+
+                ['Emojis / Day', this.DayRange, this.textGraph.stats.days.emoji, this.aTextGraph.stats.days.emoji, false, false],
+                ['Hearts / Day', this.DayRange, this.textGraph.stats.days.heart, this.aTextGraph.stats.days.heart, false, false],
+
+                ['Emojis each Day of the week', this.WeekDays, this.textGraph.stats.dayOfWeek.emoji, this.aTextGraph.stats.dayOfWeek.emoji, true, true],
+                ['Hearts each Day of the week', this.WeekDays, this.textGraph.stats.dayOfWeek.heart, this.aTextGraph.stats.dayOfWeek.heart, true, true],
+
+                ['Emojis for hours of the Day', this.DayHours, this.textGraph.stats.hours.emoji, this.aTextGraph.stats.hours.emoji, true, true],
+                ['Hearts for hours of the Day', this.DayHours, this.textGraph.stats.hours.heart, this.aTextGraph.stats.hours.heart, true, true],
+
+                ['Emojis / Month', this.MonthRange, this.textGraph.stats.months.emoji, this.aTextGraph.stats.months.emoji, false, false],
+                ['Hearts / Month', this.MonthRange, this.textGraph.stats.months.heart, this.aTextGraph.stats.months.heart, false, false],
+
+                ['Stickers / Day', this.DayRange, this.media.sticker, this.aMedia.sticker, false, false],
+                ['Photos / Day', this.DayRange, this.media.photo, this.aMedia.photo, false, false],
+                ['Audios / Day', this.DayRange, this.media.audio, this.aMedia.audio, false, false],
+                ['Videos / Day', this.DayRange, this.media.video, this.aMedia.video, false, false],
+            ];
+            const u1 = this.messageData.user1;
+            const u2 = this.messageData.user2;
+
+
+            return x.Map(([title, xAxis, d1, d2, fullX, bar], i) => {
+                const v: { ref: string, title: string, xAxis: string[], fullX: boolean, bar: boolean, data: { Updated: { [s: string]: number[] } } } = {
+                    ref: `compare ${i}`,
+                    title,
+                    xAxis,
+                    fullX,
+                    bar,
+                    data: {Updated: {}},
+                };
+                v.data.Updated[u1.handle] = d1;
+                v.data.Updated[u2.handle] = d2;
+                return v;
+            })
+        }
 
         HandleFileLoad(event: any) {
             const [messages, user1, user2, handle1, handle2, dateStart, dateEnd] = MessageParser(event.target.result);

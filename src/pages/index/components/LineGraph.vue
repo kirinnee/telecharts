@@ -115,6 +115,8 @@
                 set.label = e.label;
                 set.data = e.data;
                 set.borderWidth = 1;
+                set.backgroundColor = e.backgroundColor;
+                set.borderColor = e.borderColor;
 
             });
             this.chart!.data!.labels! = this.xAxis! as any[];
@@ -147,7 +149,6 @@
                         drawTicks: false,
                         drawOnChartArea: i == 0,
                     },
-                    stacked: true,
                     id: e,
                     display: true,
                     position: i % 2 == 0 ? 'left' : 'right',

@@ -1,5 +1,6 @@
 import {Updatable} from "./Updatable";
 import {Message} from "./Message";
+import {SafeNumber} from "./Utility";
 
 class TimeScaleTextStatistic implements Updatable {
     stats: TimeScaleTextStats = {
@@ -101,12 +102,12 @@ class TimeScaleTextStatistic implements Updatable {
 
 
         });
-        this.stats.days.averageWord[dayPrevIndex] = (dayTotal / this.stats.days.message[dayPrevIndex] || 0).toFixed(2).ToFloat();
-        this.stats.months.averageWord[mPrevIndex] = (monthTotal / this.stats.months.message[mPrevIndex] || 0).toFixed(2).ToFloat();
-        this.stats.dayOfWeek.averageWord = this.stats.dayOfWeek.message.Map((e, i) => (((dow[i] / e) || 0)).toFixed(2).ToFloat());
+        this.stats.days.averageWord[dayPrevIndex] = SafeNumber(dayTotal / this.stats.days.message[dayPrevIndex]).toFixed(2).ToFloat();
+        this.stats.months.averageWord[mPrevIndex] = SafeNumber(monthTotal / this.stats.months.message[mPrevIndex]).toFixed(2).ToFloat();
+        this.stats.dayOfWeek.averageWord = this.stats.dayOfWeek.message.Map((e, i) => (SafeNumber(dow[i] / e)).toFixed(2).ToFloat());
 
-        this.stats.dayOfWeek.message = this.stats.dayOfWeek.message.Map((e, i) => ((e / dowCount[i]) || 0).toFixed(2).ToFloat());
-        this.stats.hours.averageWord = this.stats.hours.message.Map((e, i) => ((hours[i] / e) || 0).toFixed(2).ToFloat());
+        this.stats.dayOfWeek.message = this.stats.dayOfWeek.message.Map((e, i) => (SafeNumber(e / dowCount[i])).toFixed(2).ToFloat());
+        this.stats.hours.averageWord = this.stats.hours.message.Map((e, i) => (SafeNumber(hours[i] / e)).toFixed(2).ToFloat());
     }
 
     get Updated(): TimeScaleTextStats {

@@ -1,6 +1,7 @@
 import {Message} from "./Message";
 import {core} from "../pages/index/init";
 import {SortType} from "@kirinnee/core";
+import {SafeNumber} from "./Utility";
 
 class EmojiDataSet {
     LeaderBoard: EmojiData[] = [];
@@ -29,7 +30,7 @@ class EmojiDataSet {
             .Sort(SortType.Descending, ds => ds.value);
         if (this.LeaderBoard.length > 0) {
             const total = this.LeaderBoard.Sum(t => t.value);
-            this.LeaderBoard = this.LeaderBoard.Each(e => e.percentage = ((e.value / total) || 0) * 100)
+            this.LeaderBoard = this.LeaderBoard.Each(e => e.percentage = (SafeNumber(e.value / total)) * 100)
         }
     }
 }

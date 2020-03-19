@@ -131,4 +131,8 @@ function NumberFormatter(i: number | null | undefined, unit: string, def: string
     }
 }
 
-export {SplitUser, BreakdownMessage, GetDuration, GenerateDayRange, GenerateMonthRange, NumberFormatter}
+function SafeNumber(i: number): number {
+    return i.Finite() ? i : 0;
+}
+
+export {SplitUser, BreakdownMessage, GetDuration, GenerateDayRange, GenerateMonthRange, NumberFormatter, SafeNumber}

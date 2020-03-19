@@ -1,6 +1,6 @@
 import {Updatable} from "./Updatable";
 import {Message} from "./Message";
-import {NumberFormatter} from "./Utility";
+import {NumberFormatter, SafeNumber} from "./Utility";
 
 class CallStatistic implements Updatable {
     stats: CallStats = {
@@ -33,8 +33,8 @@ class CallStatistic implements Updatable {
             this.stats.totalDuration = calls.Sum(x => x.callDuration.TotalMinutes);
             this.stats.averageDuration = this.stats.totalDuration / calls.length;
 
-            this.stats.callsPerMonth = this.stats.calls / months || 0;
-            this.stats.callsPerDay = this.stats.calls / days || 0;
+            this.stats.callsPerMonth = SafeNumber(this.stats.calls / months);
+            this.stats.callsPerDay = SafeNumber(this.stats.calls / days);
 
             this.stats.longestCall = calls.Max(x => x.callDuration.TotalMinutes);
             if (this.stats.longestCall.callDuration.TotalMinutes < 1) {
@@ -56,8 +56,8 @@ class CallStatistic implements Updatable {
             delete this.stats.shortestCall;
         }
 
-        this.stats.averageDurationPerDay = this.stats.totalDuration / days || 0;
-        this.stats.averageDurationPerMonth = this.stats.totalDuration / months || 0;
+        this.stats.averageDurationPerDay = SafeNumber(this.stats.totalDuration / days);
+        this.stats.averageDurationPerMonth = SafeNumber(this.stats.totalDuration / months);
 
         this.stats.shortestCallText = NumberFormatter(this.stats.shortestCall?.callDuration.TotalMinutes, 'Mins', 'None');
         this.stats.longestCallText = NumberFormatter(this.stats.longestCall?.callDuration.TotalMinutes, 'Mins', 'None');

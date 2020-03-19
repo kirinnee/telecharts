@@ -127,6 +127,7 @@
     import {Updatable} from "../../../classLibrary/Updatable";
     import Chart from "chart.js";
     import {Commarize} from "../init";
+    import {SafeNumber} from "../../../classLibrary/Utility";
 
     @Component({
         props: {
@@ -267,7 +268,7 @@
         }
 
         get Percentage(): string[] {
-            return this.DataSet.Map(e => ((e / this.TotalValue || 0) * 100)
+            return this.DataSet.Map(e => (SafeNumber(e / this.TotalValue) * 100)
                 .toFixed(1).toString() + "%")
 
         }

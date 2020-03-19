@@ -1,5 +1,6 @@
 import {Updatable} from "./Updatable";
 import {Message} from "./Message";
+import {SafeNumber} from "./Utility";
 
 class AudioStatistics implements AudioStats, Updatable {
     get Updated(): AudioStats {
@@ -7,6 +8,11 @@ class AudioStatistics implements AudioStats, Updatable {
     }
 
     total: number = 0;
+
+    averageDuration: number = 0;
+    averageDurationPerDay: number = 0;
+    averageDurationPerMonth: number = 0;
+    duration: number = 0;
 
     totalDuration: string = 'None';
     avgDuration: string = 'None';
@@ -19,8 +25,13 @@ class AudioStatistics implements AudioStats, Updatable {
 
             const totalSeconds = audio.Sum(x => x.audioLength);
             const averageDuration = totalSeconds / this.total;
-            const averageDurationPerDay = totalSeconds / days || 0;
-            const averageDurationPerMonth = totalSeconds / months || 0;
+            const averageDurationPerDay = SafeNumber(totalSeconds / days);
+            const averageDurationPerMonth = SafeNumber(totalSeconds / months);
+
+            this.duration = totalSeconds;
+            this.averageDuration = averageDuration;
+            this.averageDurationPerDay = averageDurationPerDay;
+            this.averageDurationPerMonth = averageDurationPerMonth;
 
             this.totalDuration = this.FormatSecondsToTime(totalSeconds);
             this.avgDuration = this.FormatSecondsToTime(averageDuration);
@@ -50,27 +61,30 @@ class AudioStatistics implements AudioStats, Updatable {
         let ret = '';
         let flag = false;
         if (hours > 0) {
-            console.log(ret);
-            ret += `${hours.ToInt()}hr `;
+            ret += `${hours.ToInt()}h `;
             flag = true;
         }
         if (minutes > 0 || flag) {
-            console.log(ret);
-            ret += `${minutes.ToInt()}min `;
+            ret += `${minutes.ToInt()}m `;
             flag = true;
         }
         if (seconds > 0 || flag) {
-            console.log(ret);
             ret += `${seconds.ToInt()}s`
         }
-        console.log(ret);
         return ret;
     }
+
+
 }
 
 
 interface AudioStats {
     total: number;
+
+    duration: number;
+    averageDuration: number;
+    averageDurationPerDay: number;
+    averageDurationPerMonth: number;
 
     totalDuration: string;
     avgDuration: string;

@@ -1,5 +1,6 @@
 import {Updatable} from "./Updatable";
 import {Message} from "./Message";
+import {SafeNumber} from "./Utility";
 
 class TextStatistic implements Updatable {
     stats: TextStats = {
@@ -38,24 +39,25 @@ class TextStatistic implements Updatable {
             this.stats.totalHeart = textMessages.Sum(x => x.heartCount);
 
 
-            this.stats.averageMessagePerMonth = count / months || 0;
-            this.stats.averageMessagePerDay = count / days || 0;
+            this.stats.averageMessagePerMonth = SafeNumber(count / months);
 
-            this.stats.averageHeartPerMonth = this.stats.totalHeart / months || 0;
-            this.stats.averageHeartPerDay = this.stats.totalHeart / days || 0;
+            this.stats.averageMessagePerDay = SafeNumber(count / days);
+
+            this.stats.averageHeartPerMonth = SafeNumber(this.stats.totalHeart / months);
+            this.stats.averageHeartPerDay = SafeNumber(this.stats.totalHeart / days);
             this.stats.averageHeartPerMessage = this.stats.totalHeart / count;
 
-            this.stats.averageWordPerMonth = this.stats.totalWords / months || 0;
-            this.stats.averageWordPerDay = this.stats.totalWords / days || 0;
+            this.stats.averageWordPerMonth = SafeNumber(this.stats.totalWords / months);
+            this.stats.averageWordPerDay = SafeNumber(this.stats.totalWords / days);
             this.stats.averageWordPerMessage = this.stats.totalWords / count;
 
 
-            this.stats.averageCharacterPerMonth = this.stats.totalCharacters / months || 0;
-            this.stats.averageCharacterPerDay = this.stats.totalCharacters / days || 0;
+            this.stats.averageCharacterPerMonth = SafeNumber(this.stats.totalCharacters / months);
+            this.stats.averageCharacterPerDay = SafeNumber(this.stats.totalCharacters / days);
             this.stats.averageCharacterPerMessage = this.stats.totalCharacters / count;
 
-            this.stats.averageEmojiPerMonth = this.stats.totalEmoji / months || 0;
-            this.stats.averageEmojiPerDay = this.stats.totalEmoji / days || 0;
+            this.stats.averageEmojiPerMonth = SafeNumber(this.stats.totalEmoji / months);
+            this.stats.averageEmojiPerDay = SafeNumber(this.stats.totalEmoji / days);
             this.stats.averageEmojiPerMessage = this.stats.totalEmoji / count;
 
 
