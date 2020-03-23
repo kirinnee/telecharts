@@ -67,7 +67,7 @@ class TimeScaleTextStatistic implements Updatable {
 
             // resolve day
             if (day != dayPrevIndex) {
-                this.stats.days.averageWord[dayPrevIndex] = (dayTotal / this.stats.days.message[dayPrevIndex]).toFixed(2).ToFloat();
+                this.stats.days.averageWord[dayPrevIndex] = SafeNumber(dayTotal / this.stats.days.message[dayPrevIndex]).toFixed(2).ToFloat();
                 dayTotal = 0;
                 dayPrevIndex = day;
                 dowCount[dayOfWeek
@@ -80,7 +80,7 @@ class TimeScaleTextStatistic implements Updatable {
 
             // resolve month
             if (month != mPrevIndex) {
-                this.stats.months.averageWord[mPrevIndex] = (monthTotal / this.stats.months.message[mPrevIndex]).toFixed(2).ToFloat();
+                this.stats.months.averageWord[mPrevIndex] = SafeNumber(monthTotal / this.stats.months.message[mPrevIndex]).toFixed(2).ToFloat();
                 monthTotal = 0;
                 mPrevIndex = month;
             }

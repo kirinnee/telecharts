@@ -868,7 +868,6 @@
                 {label: 'Total Audio Duration', value: this.audio.totalDuration},
                 {label: 'Avg Audio Duration', value: this.audio.avgDuration},
                 {label: 'Audio Duration / Day', value: this.audio.avgDurationPerDay},
-                // {label: 'Audio Duration / Month', value: this.audio.avgDurationPerMonth},
             ];
         }
 
@@ -1068,6 +1067,8 @@
                 start: dateStart,
                 end: dateEnd,
             };
+
+            console.log(this.messageData);
 
             // Update Chart data
             this.ReadjustData(dateStart, dateEnd);
