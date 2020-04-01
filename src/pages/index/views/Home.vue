@@ -1,14 +1,14 @@
 <template>
     <div class="main" ref="color">
         <div class="app">
-            <UploadLogs ref="upload" class="upload"/>
-            <SeventhSlide ref="seventh" class="seventh"/>
-            <SixthSlide ref="sixth" class="sixth"/>
-            <FifthSlide ref="fifth" class="fifth"/>
-            <FourthSlide ref="fourth" class="fourth"/>
-            <ThirdSlide ref="third" class="third"/>
-            <SecondSlide ref="second" class="second"/>
-            <FirstSlide ref="first" class="first"/>
+            <UploadLogs v-if='show[7]' :insta-load="insta" ref="upload" class="upload"/>
+            <SeventhSlide v-if='show[6]' ref="seventh" class="seventh"/>
+            <SixthSlide v-if='show[5]' ref="sixth" class="sixth"/>
+            <FifthSlide v-if='show[4]' ref="fifth" class="fifth"/>
+            <FourthSlide v-if='show[3]' ref="fourth" class="fourth"/>
+            <ThirdSlide v-if='show[2]' ref="third" class="third"/>
+            <SecondSlide v-if='show[1]' ref="second" class="second"/>
+            <FirstSlide v-if='show[0]' ref="first" class="first"/>
         </div>
     </div>
 </template>
@@ -54,6 +54,12 @@
 
         current: number = 0;
         currentColor: string = "#30a3e6";
+
+        show: boolean[] = [true, false, false, false, false, false, false, false];
+
+
+        insta: boolean = false;
+
 
         get Colors(): string[] {
             return [
@@ -103,36 +109,47 @@
 
         GoToSlide(x: number) {
             const swing = eases.Swing(EaseStrength.Linear);
+            Vue.set(this.show, x, true);
             if (x == 7) {
                 this.DashBoardColor();
             } else {
                 this.ChangeColor(swing);
-
             }
-            this.Slides[this.current].$el
-                .X(0, "-100%", {duration: 500, ease: swing})
-                .Opacity(1, 0, {duration: 0});
+            Vue.nextTick().then(() => {
+                this.Slides[this.current].$el
+                    .X(0, "-100%", {duration: 500, ease: swing})
+                    .Opacity(1, 0, {duration: 0});
 
-            this.Slides[x].$el
-                .Opacity(0, 1, {duration: 0})
-                .X("100%", 0, {duration: 500, ease: swing})
-                .Promise.then(() => {
-                this.current = x
+                console.log(this.Slides);
+
+                this.Slides[x].$el
+                    .Opacity(0, 1, {duration: 0})
+                    .X("100%", 0, {duration: 500, ease: swing})
+                    .Promise.then(() => {
+                    Vue.set(this.show, this.current, false);
+                    this.current = x
+
+                });
             });
+
         }
 
         BackToSlide(x: number) {
             const swing = eases.Swing(EaseStrength.Linear);
+            Vue.set(this.show, x, true);
             this.ChangeColor(swing);
-            this.Slides[this.current].$el
-                .X(0, "100%", {duration: 500, ease: swing})
-                .Opacity(1, 0, {duration: 0});
+            Vue.nextTick().then(() => {
+                this.Slides[this.current].$el
+                    .X(0, "100%", {duration: 500, ease: swing})
+                    .Opacity(1, 0, {duration: 0});
 
-            this.Slides[x].$el
-                .Opacity(0, 1, {duration: 0})
-                .X("-100%", 0, {duration: 500, ease: swing})
-                .Promise.then(() => {
-                this.current = x
+                this.Slides[x].$el
+                    .Opacity(0, 1, {duration: 0})
+                    .X("-100%", 0, {duration: 500, ease: swing})
+                    .Promise.then(() => {
+                    Vue.set(this.show, this.current, false);
+                    this.current = x
+                });
             });
         }
 

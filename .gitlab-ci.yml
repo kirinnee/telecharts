@@ -11,7 +11,6 @@ Build:
   tags:
     - frontend
   script:
-    - touch ./src/pages/index/components/sample.txt
     - yarn install --prefer-offline
     - yarn build
   artifacts:

@@ -2,6 +2,7 @@
     <div class="holder">
         <Button class="b" @click.native="Next" text="Get Started"/>
         <Button class="b" @click.native="Last" text="I already have my Telegram logs"/>
+        <Button class="b" @click.native="Demo" text="Demo"/>
     </div>
 </template>
 
@@ -42,6 +43,11 @@
 
 
         Last() {
+            this.Main.GoToSlide(7);
+        }
+
+        Demo() {
+            this.Main.insta = true;
             this.Main.GoToSlide(7);
         }
     }
